@@ -12,7 +12,7 @@ Description: This is a script containing necessary function definitions for exam
 
 Note: ...
 
-Created on:  10.10.2018
+Created on:  30.11.2015
 Last update: 10.10.2018
 '''
 #===============================================================================
@@ -22,7 +22,7 @@ from scipy.stats import gaussian_kde
 import timeit
 
 #===============================================================================
-## Start functions
+
 def get_pdf_kde(given_series):
     '''
     The function CalcForPDF_KDE evaluates the probability distribution function (pdf)

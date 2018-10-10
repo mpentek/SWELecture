@@ -20,13 +20,10 @@ Note:   ...
             custom_utilities.py
 
 Created on:  30.11.2015
-Last update: 30.10.2017
+Last update: 10.10.2018
 '''
 #===============================================================================
-## Display which python version is used
-print('Python version:') 
-import sys
-print(sys.version)
+
 
 #===================== BLOCK 1 =======================
 # import python modules
@@ -316,7 +313,7 @@ plt.grid(True)
 
 plt.subplot(1,3,3)
 plt.plot(cos_freq_half, cos_series_fft)
-plt.xlim([1, 25]);
+plt.xlim([1, 25])
 plt.ylabel('|Amplitude|')
 plt.grid(True)
 plt.show()
@@ -532,10 +529,10 @@ plt.legend()
 plt.show()
 
 #===================== BLOCK 32 ======================
-#file_name = 'given_data1.dat'  # has 5350 values for each column
-#time_series = numpy.loadtxt(file_name, skiprows=0, usecols = (0,)) # in [s]
-#bending_moment_series = numpy.loadtxt(file_name, skiprows=0, usecols = (1,)) # in [kNm]
+# file_name = 'given_data1.dat'  # has 5350 values for each column
+# time_series = np.loadtxt(file_name, skiprows=0, usecols = (0,)) # in [s]
+# bending_moment_series = np.loadtxt(file_name, skiprows=0, usecols = (1,)) # in [kNm]
 
-#file_name = 'given_data2.dat' # has 53491 values for each column
-#time_series = (numpy.loadtxt(file_name, skiprows=0, usecols = (0,))-1000)/100  # shift 1000 [cs] then divide by 100 to get [s]
-#bending_moment_series = numpy.loadtxt(file_name, skiprows=0, usecols = (1,))/1000 # to get [kNm] from [Nm] divide by 1000
+# file_name = 'given_data2.dat' # has 53491 values for each column
+# time_series = (np.loadtxt(file_name, skiprows=0, usecols = (0,))-1000)/100  # shift 1000 [cs] then divide by 100 to get [s]
+# bending_moment_series = np.loadtxt(file_name, skiprows=0, usecols = (1,))/1000 # to get [kNm] from [Nm] divide by 1000
