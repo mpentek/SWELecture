@@ -1,6 +1,6 @@
 #===============================================================================
 '''
-Project:Lecture - Structural Wind Engineering WS18-19 
+Project: Structural Wind Engineering WS18-19 
         Chair of Structural Analysis @ TUM - R. Wuchner, M. Pentek
         
         Computation of wind speed
