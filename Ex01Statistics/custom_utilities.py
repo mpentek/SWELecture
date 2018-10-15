@@ -25,7 +25,7 @@ import timeit
 
 def get_pdf_kde(given_series):
     '''
-    The function CalcForPDF_KDE evaluates the probability distribution function (pdf)
+    The function get_pdf_kde evaluates the probability distribution function (pdf)
     of the samples by using a non-parametric estimation technique called Kernal Desnity 
     Estimation (KDE). More details can be found at 
     https://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.stats.gaussian_kde.html.
@@ -40,7 +40,7 @@ def get_pdf_kde(given_series):
 
 def get_pdf_normal(given_series):
     '''
-    The function CalcForPDF_Normal estimates the normal pdf of the signal from the mean 
+    The function get_pdf_normal estimates the normal pdf of the signal from the mean 
     and standard deviation of the samples. Recall the fact that a Normal distribution 
     can be entirely defined by two parameters, namely the mean and standard deviation. 
     More details about the function mlab.normpdf can be found at 
@@ -52,28 +52,50 @@ def get_pdf_normal(given_series):
     series_m = np.mean(given_series)
     series_min = np.min(given_series)
     series_step = (series_max - series_min)/ 1000
-    if series_std ==0.0:
-        pdf_x = np.zeros(len(given_series))
-        pdf_y = np.zeros(len(given_series))
-    else:
-        series_pdf = mlab.normpdf(np.arange(series_min, 
+    series_pdf = mlab.normpdf(np.arange(series_min, 
                                             series_max + series_step, 
                                             series_step), 
                                   series_m, 
                                   series_std)
-        pdf_x = np.arange(series_min, series_max + series_step, series_step)
-        pdf_y = series_pdf
+    pdf_x = np.arange(series_min, series_max + series_step, series_step)
+    pdf_y = series_pdf
     return pdf_x, pdf_y
+
+
+def get_pdf_const(given_series):
+    '''
+    The function get_pdf_const mimcs the pdf of a constant signal which is a vertical
+    line extending to infinity and the cdf is a vertical line to unity. 
+    As 'KDE' and 'Normal' are unable to deliver this behavious use this function for 
+    constant series   
+    '''    
+
+    series_std = np.std(given_series)
+    series_m = np.mean(given_series)
+    series_step = (2 * series_m - 0)/ 1000
+    if series_std ==0.0:
+        pdf_x = np.arange(0, 2 * series_m , series_step)
+        pdf_y = np.zeros(len(pdf_x))
+        pdf_y[int(len(pdf_x)/2)] = len(given_series)
+    else : 
+        raise Exception("The given series is not a Constant signal, use 'KDE' or 'Normal'")
+    return pdf_x, pdf_y
+    
 
 def get_pdf(given_series, case='KDE'):
     if case == 'KDE':
         return get_pdf_kde(given_series)
     elif case == 'Normal':
         return get_pdf_normal(given_series)
+    elif case == 'Constant':
+        return get_pdf_const(given_series)
     else:
-        raise NotImplementedError("PDF type not implemented, choose either KDE or Normal")
+        raise NotImplementedError("PDF type not implemented, choose either KDE, Normal or Constant")
     
 def get_fft(given_series, sampling_freq):
+    '''
+    The function get_fft estimates the Fast Fourier transform of the given signal 
+    '''
 
     signal_length=len(given_series)
 
@@ -95,21 +117,25 @@ def get_fft(given_series, sampling_freq):
     return freq_half, series_fft
     
 def get_ecdf(series_pdf_x, series_pdf_y):
+    '''
+    The function get_ecdf computes the emperital CDF of the given PDF. 
+
+    '''
     
     # set up data
     dx = series_pdf_x[1] - series_pdf_x[0]    
     Y = series_pdf_y
-    
     # normalize data
     Y /= (dx * series_pdf_y).sum()
-    
     # compute ecdf
     CY = np.cumsum(Y * dx)
     
     return CY
     
 def get_pot(given_series, threshold_value):
-    
+    '''
+    The function get_pot computes the Peak Over Threshold for a given threshold value.
+    '''
     pot_index = []
     pot_extreme = []
 
@@ -121,6 +147,9 @@ def get_pot(given_series, threshold_value):
     return pot_index, pot_extreme
     
 def get_bm(given_series, block_size):
+    '''
+    The function get_bm computes the Block Maxima of the signal for a given block size
+    '''
 
     block_max = np.abs(given_series[0])
     
@@ -141,7 +170,10 @@ def get_bm(given_series, block_size):
     return bm_index, bm_extreme
     
 def get_pot_runtime(given_series, threshold_param):
-    
+    '''
+    The function get_pot_runtime does a runtime evaluation of the Peak Over Threshold 
+    for a given threshold parameter
+    '''
     tic = timeit.default_timer()    
     
     # renaming
