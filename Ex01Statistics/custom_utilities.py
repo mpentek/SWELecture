@@ -1,6 +1,6 @@
 #===============================================================================
 '''
-Project:Lecture - Structural Wind Engineering WS18-19 
+Project: Lecture - Structural Wind Engineering WS18-19 
         Chair of Structural Analysis @ TUM - R. Wuchner, M. Pentek
         
         Various custom utilities for statistical evaluations
@@ -13,7 +13,7 @@ Description: This is a script containing necessary function definitions for exam
 Note: ...
 
 Created on:  30.11.2015
-Last update: 10.10.2018
+Last update: 17.10.2018
 '''
 #===============================================================================
 import matplotlib.mlab as mlab
@@ -118,8 +118,7 @@ def get_fft(given_series, sampling_freq):
     
 def get_ecdf(series_pdf_x, series_pdf_y):
     '''
-    The function get_ecdf computes the emperital CDF of the given PDF. 
-
+    The function get_ecdf computes the emperital CDF of the given PDF.
     '''
     
     # set up data
