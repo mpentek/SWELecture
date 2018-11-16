@@ -40,8 +40,8 @@ mdof_solver = MDoFSolver(solver_settings,1)
 
 z = mdof_solver.model.nodal_coordinates["y0"]
 # Generating wind profile
-wind_velocity = 20. # m/s
-velocity_vector = wind_velocity * pow(z/z[-1], 0.2)
+wind_velocity = 28.7 # m/s
+velocity_vector = 1.05 * wind_velocity * pow(z/10, 0.2)
 wind_force = 0.5 * 1.2 * velocity_vector**2 * 30
 
 def load_distribution(level_height, num_of_levels, wind_force):

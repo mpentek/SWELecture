@@ -134,11 +134,11 @@ class MDoFSolver(CoSimulationBaseSolver):
     def GetSolutionStepValue(self, identifier, buffer_idx=0):
         # PMT: what should be get: the buffer value in solver or scheme?
         if identifier == "DISPLACEMENT":
-            return self.buffer[0,buffer_idx,:]
+            return self.scheme.GetDisplacement()#buffer[0,buffer_idx,:]
         elif identifier == "VELOCITY":
-            return self.buffer[1,buffer_idx,:]
+            return self.scheme.GetVelocity()#.buffer[1,buffer_idx,:]
         elif identifier == "ACCELERATION":
-            return self.buffer[2,buffer_idx,:]
+            return self.scheme.GetAcceleration()#buffer[2,buffer_idx,:]
         else:
             raise Exception("Identifier is unknown!")
 

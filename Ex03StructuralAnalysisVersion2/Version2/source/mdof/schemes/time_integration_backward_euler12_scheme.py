@@ -25,11 +25,11 @@ import json
 import os
 
 def CreateScheme(scheme_settings):
-    return TimeIntegrationForwardEuler1Scheme(scheme_settings)
+    return TimeIntegrationEuler12Scheme(scheme_settings)
 
 # PMT to be checked, seems to be written acceleration based, might need correction
 
-class TimeIntegrationForwardEuler1Scheme(TimeIntegrationBaseScheme):
+class TimeIntegrationEuler12Scheme(TimeIntegrationBaseScheme):
     """
     A single-degree-of-freedom SDoF model
 
@@ -38,18 +38,18 @@ class TimeIntegrationForwardEuler1Scheme(TimeIntegrationBaseScheme):
     def __init__(self, scheme_settings):
 
         default_settings = {
-                "type"      : "forward_euler1",
+                "type"      : "backward_euler12",
                 "settings"  : {}
             }
-
-        ValidateAndAssignDefaults(default_settings, scheme_settings)
 
         # add buffer size - this is not user-specified
         # each derived scheme specifies it
         scheme_settings["settings"].update({"buffer_size":3})
 
+        ValidateAndAssignDefaults(default_settings, scheme_settings)
+
         # base scheme settings
-        super(TimeIntegrationForwardEuler1Scheme, self).__init__(scheme_settings["settings"])
+        super(TimeIntegrationEuler12Scheme, self).__init__(scheme_settings["settings"])
 
     def _AssembleLHS(self, model):
         """
@@ -63,12 +63,13 @@ class TimeIntegrationForwardEuler1Scheme(TimeIntegrationBaseScheme):
 
         RHS = self.buffer[3,0,:] * self.dt**2
         RHS -= np.dot(- 2 * model.m - model.b * self.dt, self.buffer[0,1,:])
-        RHS -= np.dot(model.m, self.buffer[0,2,:])
+        RHS -= np.dot(model.m , self.buffer[0,2,:])
+        return RHS
 
         return RHS
 
     def UpdateDerivedValues(self):
         """
         """
-        self.buffer[1,0,:] = (self.buffer[0,0,:] - self.buffer[0,1,:]) / self.dt
+        self.buffer[1,0,:] = (self.buffer[0,0,:] - self.buffer[0,2,:]) * 0.5 / self.dt
         self.buffer[2,0,:] = (self.buffer[0,0,:] - 2 * self.buffer[0,1,:] + self.buffer[0,2,:]) / self.dt**2

@@ -33,7 +33,7 @@ parameter_file = open('cosim_mdof_generic_parameters.json','r')
 Parameters = json.loads(parameter_file.read())
 solver_settings = Parameters['solver_settings']
 mdof_solver = MDoFSolver(solver_settings,1)
-"""
+
 ########
 # import or read-in -> sample data for a generic highrise
 import examplefiles.mdof_model_highrise as m_highrise
@@ -56,21 +56,18 @@ mdof_solver.model.f0 = np.zeros(len(z))
 mdof_solver.scheme.buffer = np.zeros((4,
                                 mdof_solver.scheme.buffer_size,
                                 len(z)))
-mdof_solver.Initialize()
+mdof_solver.nr_of_dofs = len(z)
+mdof_solver.buffer = np.zeros((3, mdof_solver.buffer_size, mdof_solver.nr_of_dofs))
+#####
 
-##
-"""
 #=========================static analysis==========================  
 # static force definition 
 
 z = mdof_solver.model.nodal_coordinates["y0"]
 # Generating wind profile
-wind_velocity = 20. # m/s
-velocity_vector = wind_velocity * pow(z/z[-1], 0.2)
+wind_velocity = 28.7 # m/s
+velocity_vector = 1.05 * wind_velocity * pow(z/10, 0.2)
 wind_force = 0.5 * 1.2 * velocity_vector**2 * 30
-
-# velocityVector = 1.05 * 28.7 * pow(mdof_solver.model.nodal_coordinates["y0"]/10,0.2)
-
 
 force_static = wind_force
 static_analysis = StaticAnalysis(mdof_solver.model)
