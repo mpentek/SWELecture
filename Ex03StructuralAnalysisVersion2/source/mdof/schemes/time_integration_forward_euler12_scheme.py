@@ -18,7 +18,7 @@ from __future__ import print_function, absolute_import, division
 from time_integration_base_scheme import TimeIntegrationBaseScheme
 
 # Importing tools
-from co_simulation_tools import ValidateAndAssignDefaults
+from source.custom_files import ValidateAndAssignDefaults
 
 # Other imports
 import numpy as np

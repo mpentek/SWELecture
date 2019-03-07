@@ -32,13 +32,13 @@ force_static = np.array([1.5]) # external static force acting on the system
 
 static_analysis = StaticAnalysis(sdof_solver.model)
 static_analysis.solve(force_static)
-static_analysis.plot_solve_result()
+#static_analysis.plot_solve_result()
 
 #========================= eigenvalue analysis ==========================  
 eigenvalue_analysis = EigenvalueAnalysis(sdof_solver.model)
 eigenvalue_analysis.solve()
-eigenvalue_analysis.plot_selected_eigenmode(1)
-eigenvalue_analysis.animate_selected_eigenmode(1)
+#eigenvalue_analysis.plot_selected_eigenmode(1)
+#eigenvalue_analysis.animate_selected_eigenmode(1)
 
 #========================= dynamic analysis ==========================  
 
@@ -60,5 +60,6 @@ force_dynamic = load_type("signalSin", array_time, 1, freq, force_static)
 
 dynamic_analysis = DynamicAnalysis(sdof_solver, force_dynamic, time_parameters) 
 dynamic_analysis.solve()
-dynamic_analysis.plot_selected_time_step(0.75)
+np.savetxt('dis',dynamic_analysis.displacement)
+dynamic_analysis.plot_selected_time_step(1)
 dynamic_analysis.animate_time_history()
