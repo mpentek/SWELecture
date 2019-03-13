@@ -75,7 +75,6 @@ class MDoFCantileverEBBeam2DModel(MDoFBaseModel):
         area = model_settings["system_parameters"]["area"]
         target_freq = model_settings["system_parameters"]["target_frequency"]
         # adjust index
-        # AK check why there was -1
         target_mode = model_settings["system_parameters"]["target_mode"] - 1
         zeta = model_settings["system_parameters"]["damping_ratio"]
         level_height = model_settings["system_parameters"]["level_height"]

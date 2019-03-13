@@ -73,6 +73,29 @@ class TimeIntegrationBdf2Scheme(TimeIntegrationBaseScheme):
         return RHS
 
         return RHS
+    
+    def Initialize(self, model):
+        """
+        """
+        # call function from base
+        super(TimeIntegrationBdf2Scheme, self).Initialize(model)
+        # overwrite with scheme-specific values
+
+        self.buffer[0,4,:] = model.u0  
+        self.buffer[0,3,:] = model.u0
+        # Euler backward integration scheme is used for the first time steps 
+
+        LHS = (model.m + model.b * self.dt + model.k * self.dt**2)
+
+        RHS2 = self.buffer[3, 2, :] * self.dt**2
+        RHS2 -= np.dot(- 2 * model.m - model.b * self.dt, self.buffer[0, 3, :])
+        RHS2 -= np.dot(model.m, self.buffer[0, 4, :])
+        self.buffer[0, 2, :] = np.linalg.solve(LHS, RHS2)
+        
+        RHS1 = self.buffer[3, 1, :] * self.dt**2
+        RHS1 -= np.dot(- 2 * model.m - model.b * self.dt, self.buffer[0, 2, :])
+        RHS1 -= np.dot(model.m, self.buffer[0, 3, :])
+        self.buffer[0, 1, :] = np.linalg.solve(LHS, RHS1)
 
     def UpdateDerivedValues(self):
         """

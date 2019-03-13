@@ -69,7 +69,6 @@ class TimeIntegrationEuler12Scheme(TimeIntegrationBaseScheme):
         RHS = self.buffer[3, 0, :] * self.dt**2
         RHS -= np.dot(- 2 * model.m - model.b * self.dt, self.buffer[0, 1, :])
         RHS -= np.dot(model.m, self.buffer[0, 2, :])
-        return RHS
 
         return RHS
 
