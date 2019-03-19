@@ -421,6 +421,33 @@ class DynamicAnalysis(AnalysisType):
             # update results
             self.structure_solver.AdvanceInTime(current_time)
 
+    def plot_result_dof(self, selected_dof, selected_result):
+        """
+        Pass to plot function:
+            Plots the time series of required quantitiy 
+        """
+        print('Plotting result for selected dof in dynamic analysis \n')
+        plot_title = selected_result.capitalize() + ' at DoF ' + str(selected_dof)
+
+        # the angular results are not plotted for MDoFBeam model 
+        if self.structure_solver.model.category in ['SDoF', 'MDoFShear']:
+            dof = selected_dof - 1
+        elif self.structure_solver.model.category in ['MDoFBeam', 'MDoFBridge']:
+            dof = 2 * (selected_dof - 1)
+        else:
+            sys.exit()
+    
+        if selected_result == 'displacement':
+            result_data = self.displacement[dof, :]
+        elif selected_result == 'velocity': 
+            result_data = self.velocity[dof, :]
+        elif selected_result == 'acceleration':
+            result_data = self.acceleration[dof, :]
+        else: 
+            sys.exit()
+
+        visualize_result_utilities.plot_dynamic_result(plot_title, result_data, self.array_time)
+
     def plot_selected_time_step(self, selected_time_step):
         """
         Pass to plot function:
@@ -428,7 +455,6 @@ class DynamicAnalysis(AnalysisType):
             self.displacement -> here as time series -> select closes results to a requested time_step [s]  
 
         """
-
         print("Plotting result for a selected time step in DynamicAnalysis \n")
 
         # find closesed time step

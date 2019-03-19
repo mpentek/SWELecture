@@ -71,6 +71,25 @@ plot_limits = {"x":[... , ...]
                "y":[... , ...]}
 # defined based upon geometry["deformed"]
 '''
+def plot_dynamic_result(plot_title, result_data , array_time) : 
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_xlabel('Time (s)')
+    ax.set_ylabel(plot_title)
+    plt.grid()
+    plt.title(plot_title + ' Vs Time')    # set title
+    # plot undeformed
+    plt.plot(array_time, 
+            result_data, 
+            color=LINE_TYPE_SETUP["color"][1],
+            linestyle=LINE_TYPE_SETUP["linestyle"][1],
+            marker=LINE_TYPE_SETUP["marker"][1],
+            markeredgecolor=LINE_TYPE_SETUP["markeredgecolor"][1],
+            markerfacecolor=LINE_TYPE_SETUP["markerfacecolor"][1],
+            markersize=LINE_TYPE_SETUP["markersize"][1])
+    ax.legend()
+    plt.show()
 
 
 def plot_result(plot_title, geometry, force, scaling, n_data):
