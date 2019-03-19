@@ -66,14 +66,12 @@ class TimeIntegrationBdf2Scheme(TimeIntegrationBaseScheme):
         self.buffer[3, 0, :] = self.force
         
         RHS = 4 * self.buffer[3, 0, :] * self.dt**2
-        RHS -= np.dot(24 * model.m + 8 * model.b * self.dt, self.buffer[0, 1, :])
-        RHS -= np.dot(-22 * model.m - 2 * model.b * self.dt, self.buffer[0, 2, :])
-        RHS -= np.dot(8 * model.m, self.buffer[0, 3, :])
-        RHS -= np.dot(model.m, self.buffer[0, 4, :])
+        RHS += np.dot(24 * model.m + 8 * model.b * self.dt, self.buffer[0, 1, :])
+        RHS += np.dot(-22 * model.m - 2 * model.b * self.dt, self.buffer[0, 2, :])
+        RHS += np.dot(8 * model.m, self.buffer[0, 3, :])
+        RHS += np.dot(-model.m, self.buffer[0, 4, :])
         return RHS
 
-        return RHS
-    
     def Initialize(self, model):
         """
         """

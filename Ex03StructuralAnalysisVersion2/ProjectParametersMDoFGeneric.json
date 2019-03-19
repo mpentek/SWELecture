@@ -15,9 +15,8 @@
         }
     },
     "time_integration_scheme_parameters":{
-        "type" : "generalized_alpha",
+        "type" : "bdf2",
         "settings": {
-            "p_inf" : 0.15
         }
     },
      "solver_parameters": {

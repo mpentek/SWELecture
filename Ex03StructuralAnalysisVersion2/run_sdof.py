@@ -60,6 +60,5 @@ force_dynamic = load_type("signalSin", array_time, 1, freq, force_static)
 
 dynamic_analysis = DynamicAnalysis(sdof_solver, force_dynamic, time_parameters) 
 dynamic_analysis.solve()
-np.savetxt('dis',dynamic_analysis.displacement)
 dynamic_analysis.plot_selected_time_step(1)
 dynamic_analysis.animate_time_history()
