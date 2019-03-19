@@ -421,7 +421,7 @@ class DynamicAnalysis(AnalysisType):
             # update results
             self.structure_solver.AdvanceInTime(current_time)
 
-    def plot_result_dof(self, selected_dof, selected_result):
+    def plot_result_at_dof(self, selected_dof, selected_result):
         """
         Pass to plot function:
             Plots the time series of required quantitiy 
