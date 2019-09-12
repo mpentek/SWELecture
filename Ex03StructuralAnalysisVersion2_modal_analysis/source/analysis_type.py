@@ -576,14 +576,15 @@ class DynamicAnalysisModalSDOF(AnalysisType):
         self.end_time = time_settings["end_time"]
         self.array_time = np.arange(
             self.start_time, self.end_time + self.dt, self.dt)
-        rows = len(self.force)
-        cols = len(self.array_time)
         self.structure_solver = structure_solver
         mass_normalised = np.matmul(np.matmul(np.transpose(self.eigen_vector), self.structure_solver.model.m), self.eigen_vector)
         stiffness_normalised = np.matmul(np.matmul(np.transpose(self.eigen_vector), self.structure_solver.model.k), self.eigen_vector)
         damping_normalised = np.matmul(np.matmul(np.transpose(self.eigen_vector), self.structure_solver.model.b), self.eigen_vector)
         force_dynamic_normalised = np.dot(np.transpose(self.eigen_vector), force)
         self.force = force_dynamic_normalised
+
+        rows = len(self.force)
+        cols = len(self.array_time)
 
         self.structure_solver.model.m = mass_normalised
         self.structure_solver.model.k = stiffness_normalised
@@ -696,14 +697,14 @@ class DynamicAnalysisModal(AnalysisType):
         self.end_time = time_settings["end_time"]
         self.array_time = np.arange(
             self.start_time, self.end_time + self.dt, self.dt)
-        rows = len(self.force)
-        cols = len(self.array_time)
         self.structure_solver = structure_solver
         mass_normalised = np.matmul(np.matmul(np.transpose(self.eigen_vector), self.structure_solver.model.m), self.eigen_vector)
         stiffness_normalised = np.matmul(np.matmul(np.transpose(self.eigen_vector), self.structure_solver.model.k), self.eigen_vector)
         damping_normalised = np.matmul(np.matmul(np.transpose(self.eigen_vector), self.structure_solver.model.b), self.eigen_vector)
         force_dynamic_normalised = np.dot(np.transpose(self.eigen_vector), force)
         self.force = force_dynamic_normalised
+        rows = len(self.force)
+        cols = len(self.array_time)
 
         self.structure_solver.model.m = mass_normalised
         self.structure_solver.model.k = stiffness_normalised

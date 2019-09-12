@@ -82,6 +82,12 @@ time_ref = time.time() - time_start
 
 # dynamic analysis in modal coordinates
 # solves the MDOF system itself : redundant : needs to be removed probably 
+# modes_considered = 2
+# # define here the modes to be considered for modal analysis
+# eigen_vector_norm = eigen_vector_norm[:, : modes_considered] 
+# eigen_values = eigen_values[:modes_considered]
+# It might be difficult to consider less modes in here 
+
 time_start = time.time()
 dynamic_analysis_modal = DynamicAnalysisModal(mdof_solver_modal, force_dynamic, time_parameters, eigen_vector_norm, eigen_values)
 dynamic_analysis_modal.solve()
@@ -92,6 +98,11 @@ time_modal = time.time() - time_start
 # dynamic analysis in modal coordinates woth SDOF 
 # conoverts to the modal coordinates and solves sdof system and then transform back to the actual coordinates 
 # TODO : check for a better way to construct SDOF solver 
+modes_considered = 2
+# define here the modes to be considered for modal analysis
+eigen_vector_norm = eigen_vector_norm[:, : modes_considered] 
+eigen_values = eigen_values[:modes_considered]
+
 time_start = time.time()
 dynamic_analysis_modal_sdof = DynamicAnalysisModalSDOF(mdof_solver_modal_sdof, force_dynamic, time_parameters, eigen_vector_norm, eigen_values)
 dynamic_analysis_modal_sdof.solve()
