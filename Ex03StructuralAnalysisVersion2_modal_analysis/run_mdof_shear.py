@@ -65,7 +65,7 @@ array_time = np.arange(start_time, end_time + dt, dt)
 
 # external dynamic force acting on the system
 freq = 5
-force_dynamic = load_type("signalSuperposed", array_time, len(z), freq, force_static_const)
+force_dynamic = load_type("signalSin", array_time, len(z), freq, force_static_const)
 
 dynamic_analysis = DynamicAnalysis(mdof_solver, force_dynamic, time_parameters)
 dynamic_analysis.solve()

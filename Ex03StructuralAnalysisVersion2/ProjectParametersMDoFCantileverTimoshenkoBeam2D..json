@@ -1,0 +1,34 @@
+{
+    "model_parameters": {
+        "type": "cantilever_timoshemko_beam_2d",
+        "system_parameters":{
+            "density"           : 26.0,
+            "area"              : 1350.0,
+            "shear_area"        : 1125,
+            "youngs_modulus"    : 1e5,
+            "poisson_ratio"     : 0.3,
+            "target_frequency"  : 0.2,
+            "target_mode"       : 2,
+            "damping_ratio"     : 0.05,
+            "level_height"      : 4.0,
+            "number_of_levels"  : 10
+        },
+        "initial_conditions":{
+            "displacement"      : "none",
+            "velocity"          : "none",
+            "acceleration"      : "none",
+            "external_force"    : "none"
+        }
+    },
+    "time_integration_scheme_parameters":{
+        "type" : "bdf2",
+        "settings": {
+        }
+    },
+     "solver_parameters": {
+         "buffer_size": 3
+     },
+     "output_parameters":{
+        "file_name": "mdof_solver/results_mdof_cantilever_timoshemko_2d.dat"
+     }
+}

@@ -98,7 +98,7 @@ time_modal = time.time() - time_start
 # dynamic analysis in modal coordinates woth SDOF 
 # conoverts to the modal coordinates and solves sdof system and then transform back to the actual coordinates 
 # TODO : check for a better way to construct SDOF solver 
-modes_considered = 2
+modes_considered = 5
 # define here the modes to be considered for modal analysis
 eigen_vector_norm = eigen_vector_norm[:, : modes_considered] 
 eigen_values = eigen_values[:modes_considered]
