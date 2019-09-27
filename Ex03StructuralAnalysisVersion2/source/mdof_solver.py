@@ -1,6 +1,6 @@
 # ===============================================================================
 '''
-Project:Lecture - Structural Wind Engineering WS18-19 
+Project:Lecture - Structural Wind Engineering WS19-20 
         Chair of Structural Analysis @ TUM - R. Wuchner, M. Pentek
 
         Kratos Multiphysics - current developments of the EmpireApplication
@@ -8,7 +8,7 @@ Project:Lecture - Structural Wind Engineering WS18-19
         
         https://github.com/KratosMultiphysics/Kratos
 
-Last update: 16.11.2018
+Last update: 27.09.2019
 '''
 # ===============================================================================
 # makes these scripts backward compatible with python 2.6 and 2.7
