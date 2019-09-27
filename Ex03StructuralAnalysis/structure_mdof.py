@@ -1,6 +1,6 @@
 #===============================================================================
 '''
-Project: Structural Wind Engineering WS18-19
+Project: Structural Wind Engineering WS19-20
         Chair of Structural Analysis @ TUM - R. Wuchner, M. Pentek
         
         MDoF system solver using direct time integration - Generalized-Alpha Schemem, 
@@ -20,7 +20,7 @@ Description: This is a solver for direct numerical time integration for a 2DoF s
         It assumes linear DOFs with a Generalized alpha scheme with fixed dt.
         
 Created on:  15.03.2016
-Last update: 12.10.2018
+Last update: 27.09.2017
 '''
 #===============================================================================
 

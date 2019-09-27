@@ -1,6 +1,6 @@
 # ===============================================================================
 '''
-Project:Lecture - Structural Wind Engineering WS18-19 
+Project:Lecture - Structural Wind Engineering WS19-20 
         Chair of Structural Analysis @ TUM - R. Wuchner, M. Pentek
         
         Sample MDoF shear run
@@ -10,7 +10,7 @@ Author: mate.pentek@tum.de, anoop.kodakkal@tum.de, catharina.czech@tum.de, peter
 Note: ...
 
 Created on:  22.11.2017
-Last update: 16.11.2018
+Last update: 27.09.2019
 '''
 # ===============================================================================
 import numpy as np
