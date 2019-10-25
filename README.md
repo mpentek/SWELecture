@@ -4,4 +4,4 @@ A collection of teaching scripts and worksheets used for Structural Wind Enginee
 
 Chair of Structural Analysis @ TUM - R. Wüchner, M. Péntek
 
-The project is free under the BSD-3 license
+The project is free under the BSD 3-Clause License
