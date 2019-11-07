@@ -5,7 +5,7 @@ Project: Lecture - Structural Wind Engineering WS19-20
         
         Various custom utilities for statistical evaluations
 
-Author: mate.pentek@tum.de, kodakkal.anoop@tum.de
+Author: mate.pentek@tum.de, anoop.kodakkal@tum.de
          
 Description: This is a script containing necessary function definitions for examples 
         and tasks.
