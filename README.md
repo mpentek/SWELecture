@@ -1,6 +1,6 @@
-# Structural Wind Engineering
+# Structural Wind Engineering Lecture
 
-A collection of teaching scripts and worksheets used for Structural Wind Engineering
+A collection of teaching scripts and worksheets used for Structural Wind Engineering Lecture
 
 Chair of Structural Analysis @ TUM - R. Wüchner, M. Péntek
 
