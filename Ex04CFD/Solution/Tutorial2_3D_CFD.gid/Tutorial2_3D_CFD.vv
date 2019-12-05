@@ -1,0 +1,37 @@
+BeginZE C:/Users/pmt/LRZ Sync+Share/StructWindEng_WS19_20/Final/03_Exercise/Ex04CFD/_InternAll/Tutorial2_3D_CFD.gid/Tutorial2_3D_CFD.vv
+   x -1712.606689453125 1657.822998046875
+   y 2204.7177734375 -1799.97216796875
+   z -1433.32958984375 1088.491943359375
+   e 994.9874267578125
+   v 0.487735599279403687 -0.035111498087644577 -0.112939953804016113
+   r 0.864942610263824463
+   m 0.972023487091064453 0.161122903227806091 -0.170908540487289429 0 -0.229623422026634216 0.49871709942817688 -0.83579564094543457 0 -0.0494308136403560638 0.851657629013061523 0.521762311458587646 0 0 0 0 1
+   c 97.5503082275390625 -1.02915096282958984 172.418869018554688
+   pd 0
+   pno 0
+   pfo 0
+   pf 4
+   pv 0
+   NowUse 1
+   DrawingType 0
+   LightVector 90 90 150 0
+   OGLShadow(UseShadows) 0
+   OGLShadow(RenderMode) RenderNice
+   OGLShadow(ShadowBias) -0.002
+   OGLShadow(AmbientShadows) 1
+   OGLShadow(UseFBO) 1
+   OGLShadow(FBOSize) 2048
+   OGLShadow(DimmedLightFactor) 0.02
+   OGLStereo(UseStereo) 0
+   OGLStereo(RelativeEyeDistance) 1
+   OGLStereo(FlipEyes) 0
+   OGLStereo(StereoMode) AnaglyphColors
+   OGLStereo(EyeDistance) 0.075
+   OGLStereo(LeftEyeDistance) 1 0 0 1
+   OGLStereo(RightEyeDistance) 0 1 1 1
+EndZE C:/Users/pmt/LRZ Sync+Share/StructWindEng_WS19_20/Final/03_Exercise/Ex04CFD/_InternAll/Tutorial2_3D_CFD.gid/Tutorial2_3D_CFD.vv
+
+BeginMirror
+   Mirror 0 Angle 0.0 AngleFake -15.0 SizeFactor 2.0 HeightOffset 0.25 Color #d9e5f24d Backlight Off EdgeStyle No Type Scene DrawMode Mirror
+EndMirror
+
