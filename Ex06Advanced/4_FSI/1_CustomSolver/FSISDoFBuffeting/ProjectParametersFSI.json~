@@ -1,0 +1,20 @@
+{
+    "structure_data"                   : {
+        "mass"            : 1e7,
+        "eigen_freq"      : 0.9,
+        "zeta"            : 0.05,
+        "rho_inf"         : 0.16,
+        "initial_disp"    : 0.0,
+        "initial_vel"     : 0.0,
+        "initial_acc"     : 0.0,
+        "dof_type"        : "DISPLACEMENT_X",
+        "model_part_name" : "NoSlip2D_structure",
+        "output_filename" : "displacement.dat"
+    },
+    "FSI_parameters"                   : {
+        "abs_residual"      : 1e-9,
+        "rel_residual"      : 1e-2,
+        "relax_coef"        : 1.0,
+        "max_FSI_iteration" : 10
+    }
+}
