@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 '''
 Project:Lecture - Structural Wind Engineering WS18-19 
         Chair of Structural Analysis @ TUM - R. Wuchner, M. Pentek
@@ -10,12 +10,12 @@ Author: philipp.bucher@tum.de, a.winterstein@tum.de, mate.pentek@tum.de, anoop.k
 Note: ...
 
 Created on:  16.01.2018
-Last update: 13.11.2018
+Last update: 06.12.2019
 '''
-#===============================================================================
+# ===============================================================================
 
 import KratosMultiphysics
-import KratosMultiphysics.StructuralMechanicsApplication as KratosStructuralMechanics
+#import KratosMultiphysics.StructuralMechanicsApplication as KratosStructuralMechanics
 
 import sys
 import time
@@ -38,13 +38,13 @@ def Norm(array):
         try:    # array is a matrix
             for entry in row:
                 norm += entry**2
-        except: # array is a vector
+        except:  # array is a vector
             norm += row**2
-    return pow(norm,0.5)   
+    return pow(norm, 0.5)
 
 # def GetDisplacements(nodes_of_structure, dimension=3):
 #     '''
-#     Gets the (nodal) displacements of the nodes on the 
+#     Gets the (nodal) displacements of the nodes on the
 #     submodel part of the structure on the interface with the fluid
 #     '''
 #     displacements = [0.0]* dimension * len(nodes_of_structure)
@@ -58,12 +58,13 @@ def Norm(array):
 
 #     return displacements
 
+
 def GetDisplacements(structure_solver):
     return structure_solver.GetDisplacement()
 
 # def SetDisplacements(displacements, nodes_of_structure, dimension=3):
 #     '''
-#     Sets the (nodal) displacements of the nodes on the 
+#     Sets the (nodal) displacements of the nodes on the
 #     submodel part of the structure on the interface with the fluid
 #     '''
 #     index = 0
@@ -72,41 +73,48 @@ def GetDisplacements(structure_solver):
 #         node.SetSolutionStepValue(KratosMultiphysics.DISPLACEMENT_Y,0,displacements[dimension*index+1])
 #         if dimension == 3:
 #             node.SetSolutionStepValue(KratosMultiphysics.DISPLACEMENT_Z,0,displacements[dimension*index+2])
-            
+
 #         index += 1
+
 
 def SetDisplacements(displacements, structure_solver):
     return structure_solver.SetDisplacement(displacements)
 
+
 def NeumannToStructure(mapper, structure_solver, flag):
     #mapper.InverseMap(KratosStructuralMechanics.POINT_LOAD, KratosMultiphysics.REACTION, flag)
-    
+
     multiplicator = 1.0
-    #if swap_sign:
+    # if swap_sign:
     if flag:
         multiplicator = -1.0
 
     f = 0.0
     if structure_solver.dof_type == "DISPLACEMENT_X":
-        for node in mapper.destination_interface.Nodes:    
-            f += multiplicator * node.GetSolutionStepValue(KratosMultiphysics.REACTION_X, 0)
+        for node in mapper.destination_interface.Nodes:
+            f += multiplicator * \
+                node.GetSolutionStepValue(KratosMultiphysics.REACTION_X, 0)
     if structure_solver.dof_type == "DISPLACEMENT_Y":
         for node in mapper.destination_interface.Nodes:
-            f += multiplicator * node.GetSolutionStepValue(KratosMultiphysics.REACTION_Y, 0)
-    
+            f += multiplicator * \
+                node.GetSolutionStepValue(KratosMultiphysics.REACTION_Y, 0)
+
     structure_solver.SetExternalForce(f)
 
-def DisplacementToMesh(mapper, displacement, structure_solver):     
+
+def DisplacementToMesh(mapper, displacement, structure_solver):
     #mapper.Map(KratosMultiphysics.DISPLACEMENT, KratosMultiphysics.MESH_DISPLACEMENT)
 
     if structure_solver.dof_type == "DISPLACEMENT_X":
         for node in mapper.destination_interface.Nodes:
-            node.SetSolutionStepValue(KratosMultiphysics.MESH_DISPLACEMENT_X, displacement)
-            
+            node.SetSolutionStepValue(
+                KratosMultiphysics.MESH_DISPLACEMENT_X, displacement)
+
     if structure_solver.dof_type == "DISPLACEMENT_Y":
         for node in mapper.destination_interface.Nodes:
-            node.SetSolutionStepValue(KratosMultiphysics.MESH_DISPLACEMENT_Y, displacement)
-   
+            node.SetSolutionStepValue(
+                KratosMultiphysics.MESH_DISPLACEMENT_Y, displacement)
+
 
 '''
 Additional functionalities to create here a custom convergence accelerator
@@ -118,14 +126,20 @@ def CreateConvergenceAccelerator(convergence_accelerator_settings):
     if convergence_accelerator_settings["type"].GetString() == "aitken":
         return AitkenConvergenceAccelerator(convergence_accelerator_settings)
     else:
-        raise Exception("the requested convergence accelerator type " + convergence_accelerator_settings["type"].GetString() + "is not implemented.")
+        raise Exception("the requested convergence accelerator type " +
+                        convergence_accelerator_settings["type"].GetString() + "is not implemented.")
+
 
 class ConvergenceAcceleratorBase(object):
     def __init__(self, convergence_accelerator_settings):
-        self.max_iter = convergence_accelerator_settings["max_iterations"].GetInt()
-        self.res_rel_tol = convergence_accelerator_settings["residual_relative_tolerance"].GetDouble()
-        self.res_abs_tol = convergence_accelerator_settings["residual_absolute_tolerance"].GetDouble()
-        self.rel_coef_initial = convergence_accelerator_settings["relaxation_coefficient_initial_value"].GetDouble()
+        self.max_iter = convergence_accelerator_settings["max_iterations"].GetInt(
+        )
+        self.res_rel_tol = convergence_accelerator_settings["residual_relative_tolerance"].GetDouble(
+        )
+        self.res_abs_tol = convergence_accelerator_settings["residual_absolute_tolerance"].GetDouble(
+        )
+        self.rel_coef_initial = convergence_accelerator_settings["relaxation_coefficient_initial_value"].GetDouble(
+        )
 
     def CalculateResidual(self, solution, old_solution):
         '''
@@ -142,11 +156,13 @@ class ConvergenceAcceleratorBase(object):
         Calculates the relaxed (i.e. new) solution
         '''
         for index in range(len(old_solution)):
-            old_solution[index] = old_solution[index] + relaxation_coefficient * residual[index]
-        return old_solution # this is the relaxed new solution
+            old_solution[index] = old_solution[index] + \
+                relaxation_coefficient * residual[index]
+        return old_solution  # this is the relaxed new solution
 
     def ComputeRelaxationCoefficient(self):
         print("Function needs to be implemented in the derived class")
+
 
 class AitkenConvergenceAccelerator(ConvergenceAcceleratorBase):
     def ComputeRelaxationCoefficient(self, old_coefficient, residual, old_residual, iteration, max_initial_coefficient=0.2, upper_limit=2.5, lower_limit=-0.5):
@@ -157,16 +173,18 @@ class AitkenConvergenceAccelerator(ConvergenceAcceleratorBase):
             denominator = 0
             for i in range(len(residual)):
                 numerator += old_residual[i] * (residual[i] - old_residual[i])
-                denominator += pow(residual[i]-old_residual[i],2)
+                denominator += pow(residual[i]-old_residual[i], 2)
             new_coefficient = - old_coefficient * (numerator/denominator)
-            
+
             # force some limit on the calculated coefficient
             if new_coefficient > upper_limit:
                 new_coefficient = upper_limit
-                print("WARNING: upper limit of " + str(upper_limit) + "reached in Aitken: ComputeCustomRelaxation()")
+                print("WARNING: upper limit of " + str(upper_limit) +
+                      "reached in Aitken: ComputeCustomRelaxation()")
             elif new_coefficient < lower_limit:
                 new_coefficient = lower_limit
-                print("WARNING: lower limit of " + str(lower_limit) + "reached in Aitken: ComputeCustomRelaxation()")
+                print("WARNING: lower limit of " + str(lower_limit) +
+                      "reached in Aitken: ComputeCustomRelaxation()")
         return new_coefficient
 
 
@@ -182,13 +200,16 @@ This would otherwise be done by the MappingApplication
 def CreateMapper(destination_model_part, mapper_settings):
     return CustomMapper(destination_model_part, mapper_settings)
 
+
 class CustomMapper(object):
     # def __init__(self, destination_model_part, origin_model_part, mapper_settings):
     def __init__(self, destination_model_part, mapper_settings):
         # here DESTINATION = interface nodes on FLUID
-        destination_interface_name = mapper_settings["interface_submodel_part_destination"].GetString()
-        self.destination_interface = destination_model_part.GetSubModelPart(destination_interface_name)
-        
+        destination_interface_name = mapper_settings["interface_submodel_part_destination"].GetString(
+        )
+        self.destination_interface = destination_model_part.GetSubModelPart(
+            destination_interface_name)
+
         # # here ORIGIN = interface nodes on STRUCTURE
         # origin_interface_name = mapper_settings["interface_submodel_part_origin"].GetString()
         # self.origin_interface = origin_model_part.GetSubModelPart(origin_interface_name)
@@ -198,7 +219,7 @@ class CustomMapper(object):
     #     Used as a conservative (inverse)map - adequate for forces, reactions, etc. -
     #     to conserve the values in an integral sense.
     #     '''
-    
+
     #     # for this case this will be: KratosStructuralMechanics.POINT_LOAD
     #     origin_var_name = origin_variable.Name()
     #     origin_var_comp_x = KratosMultiphysics.KratosGlobals.GetVariable(origin_var_name + "_X")
@@ -252,7 +273,7 @@ class CustomMapper(object):
     #         self.origin_interface.Nodes[node_2_id].SetSolutionStepValue(origin_var_comp_x, 0, origin_node_2_val_comp_x)
     #         self.origin_interface.Nodes[node_2_id].SetSolutionStepValue(origin_var_comp_y, 0, origin_node_2_val_comp_y)
 
-    # def Map(self, origin_variable, destination_variable):            
+    # def Map(self, origin_variable, destination_variable):
     #     '''
     #     Used as a consistent  map - adequate for example for displacements (kinematics).
     #     '''

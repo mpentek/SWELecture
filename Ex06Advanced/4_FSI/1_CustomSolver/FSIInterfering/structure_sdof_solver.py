@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 '''
 Project:Lecture - Structural Wind Engineering WS18-19
         Chair of Structural Analysis @ TUM - R. Wuchner, M. Pentek
@@ -21,35 +21,40 @@ Description: This is a solver for direct numerical time integration for SDoF sys
 Note:   Mimics the structure of the code for analysis in KratosMultiphysics.
 
 Created on:  15.11.2015
-Last update: 13.11.2018
+Last update: 06.12.2019
 '''
-#===============================================================================
+# ===============================================================================
 
 from math import pi
 
+
 def CreateSolver(structure_settings):
     return StructureSDoF(structure_settings)
+
 
 class StructureSDoF(object):
     # """ Direct time integration of linear SDOF (Generalized-alpha method). """
     # This class takes the undamped eigenfrequency (f, [Hz]) as input
     def __init__(self, structure_settings):
 
-        self.time = structure_settings["problem_data"]["start_time"].GetDouble()
+        self.time = structure_settings["problem_data"]["start_time"].GetDouble(
+        )
         self.dt = structure_settings["problem_data"]["time_step"].GetDouble()
         self.step = 0
 
-        self.absolute_position = structure_settings["model_data"]["absolute_position"].GetDouble()
+        self.absolute_position = structure_settings["model_data"]["absolute_position"].GetDouble(
+        )
 
         # structure moment of inertia, damping and spring stiffness
         self.m = structure_settings["model_data"]["mass"].GetDouble()
         f = structure_settings["model_data"]["eigen_freq"].GetDouble()
         omega = 2 * pi * f
         self.k = omega**2 * self.m
-        zeta = structure_settings["model_data"]["zeta"].GetDouble() 
-        self.b = 2.0 * (self.m * self.k)**0.5 * zeta # zeta is the damping ratio - avoid this line, input explicitly
-        
-        p_inf = structure_settings["model_data"]["rho_inf"].GetDouble() 
+        zeta = structure_settings["model_data"]["zeta"].GetDouble()
+        # zeta is the damping ratio - avoid this line, input explicitly
+        self.b = 2.0 * (self.m * self.k)**0.5 * zeta
+
+        p_inf = structure_settings["model_data"]["rho_inf"].GetDouble()
         # generalized alpha parameters (to ensure unconditional stability, 2nd order accuracy)
         self.alpha_m = (2.0 * p_inf - 1.0) / (p_inf + 1.0)
         self.alpha_f = p_inf / (p_inf + 1.0)
@@ -66,7 +71,8 @@ class StructureSDoF(object):
         # coefficients for damping
         self.a1b = (1.0 - self.alpha_f) * self.gamma / (self.beta * self.dt)
         self.a2b = (1.0 - self.alpha_f) * self.gamma / self.beta - 1.0
-        self.a3b = (1.0 - self.alpha_f) * (0.5 * self.gamma / self.beta - 1.0) * self.dt
+        self.a3b = (1.0 - self.alpha_f) * \
+            (0.5 * self.gamma / self.beta - 1.0) * self.dt
         # coefficient for stiffness
         self.a1k = -1.0 * self.alpha_f
         # coefficients for velocity update
@@ -77,31 +83,37 @@ class StructureSDoF(object):
         self.a1a = self.a1v / (self.dt * self.gamma)
         self.a2a = -1.0 / (self.beta * self.dt)
         self.a3a = 1.0 - 1.0 / (2.0 * self.beta)
-        
+
         # initial displacement, velocity and acceleration
-        self.u0 = structure_settings["model_data"]["initial"]["displacement"].GetDouble()
-        self.v0 = structure_settings["model_data"]["initial"]["velocity"].GetDouble()
-        self.a0 = structure_settings["model_data"]["initial"]["acceleration"].GetDouble()
-        
+        self.u0 = structure_settings["model_data"]["initial"]["displacement"].GetDouble(
+        )
+        self.v0 = structure_settings["model_data"]["initial"]["velocity"].GetDouble(
+        )
+        self.a0 = structure_settings["model_data"]["initial"]["acceleration"].GetDouble(
+        )
+
         self.u1 = self.u0
         self.v1 = self.v0
         self.a1 = self.a0
-        
+
         # moment from a previous time step (initial moment)
         self.f0 = self.m * self.a0 + self.b * self.v0 + self.k * self.u0
         self.f1 = self.m * self.a0 + self.b * self.v0 + self.k * self.u0
-        
-        self.dof_type = structure_settings["model_data"]["dof_type"].GetString() 
 
-        # external force 
+        self.dof_type = structure_settings["model_data"]["dof_type"].GetString(
+        )
+
+        # external force
         self.ext_force = None
 
-        #filename
-        self.filename = "sdof_" + structure_settings["problem_data"]["problem_name"].GetString().lower() + "_" + self.dof_type.lower() + ".dat"
-        
+        # filename
+        self.filename = "sdof_" + structure_settings["problem_data"]["problem_name"].GetString(
+        ).lower() + "_" + self.dof_type.lower() + ".dat"
+
         # output
         self.support_output = open(self.filename, 'w')
-        self.support_output.write("# (1): time [s] (2): displacement/rotation [m/rad] (3): support force/ moment [N]/[N m]\n")
+        self.support_output.write(
+            "# (1): time [s] (2): displacement/rotation [m/rad] (3): support force/ moment [N]/[N m]\n")
         self.support_output.flush()
 
     def GetDisplacement(self):
@@ -114,7 +126,8 @@ class StructureSDoF(object):
         return 2.0 * self.u1 - self.u0
 
     def PrintSupportOutput(self):
-        self.support_output.write(str(self.time) + " " + str(self.u1) + " " + str(self.k * self.u1) + "\n")
+        self.support_output.write(
+            str(self.time) + " " + str(self.u1) + " " + str(self.k * self.u1) + "\n")
         self.support_output.flush()
 
     def SetExternalForce(self, ext_force):
@@ -125,8 +138,10 @@ class StructureSDoF(object):
         return self.a1h * self.m + self.a2h * self.b + self.a3h * self.k
 
     def _AssembleRHS(self):
-        RHS = self.m * (self.a1m * self.u0 + self.a2m * self.v0 + self.a3m * self.a0)
-        RHS += self.b * (self.a1b * self.u0 + self.a2b * self.v0 + self.a3b * self.a0)
+        RHS = self.m * (self.a1m * self.u0 + self.a2m *
+                        self.v0 + self.a3m * self.a0)
+        RHS += self.b * (self.a1b * self.u0 + self.a2b *
+                         self.v0 + self.a3b * self.a0)
 
         f = (1.0 - self.alpha_f) * self.ext_force + self.alpha_f * self.f0
         RHS += self.a1k * self.k * self.u0 + f
@@ -135,13 +150,15 @@ class StructureSDoF(object):
 
     def FinalizeSolutionStep(self):
         # update v1, a1
-        self.v1 = self.a1v * (self.u1 - self.u0) + self.a2v * self.v0 + self.a3v * self.a0
-        self.a1 = self.a1a * (self.u1 - self.u0) + self.a2a * self.v0 + self.a3a * self.a0
+        self.v1 = self.a1v * (self.u1 - self.u0) + \
+            self.a2v * self.v0 + self.a3v * self.a0
+        self.a1 = self.a1a * (self.u1 - self.u0) + \
+            self.a2a * self.v0 + self.a3a * self.a0
 
     def SolveSolutionStep(self):
-        # assemble LHS   
+        # assemble LHS
         LHS = self._AssembleLHS()
-        
+
         # assemble RHS
         RHS = self._AssembleRHS()
 
@@ -158,15 +175,15 @@ class StructureSDoF(object):
         self.f0 = self.f1
 
     def Initialize(self):
-        print ("SDoF: Initialize() called, needs to be implemented")
+        print("SDoF: Initialize() called, needs to be implemented")
         pass
 
     def Finalize(self):
-        print ("SDoF: Finalize() called, needs to be implemented")
+        print("SDoF: Finalize() called, needs to be implemented")
         pass
 
     def InitializeSolutionStep(self):
-        print ("SDoF: InitializeSolutionStep() called, needs to be implemented")
+        print("SDoF: InitializeSolutionStep() called, needs to be implemented")
         pass
 
     def AdvanceInTime(self, time):

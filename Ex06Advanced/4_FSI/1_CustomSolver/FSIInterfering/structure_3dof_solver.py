@@ -16,7 +16,7 @@ Description: This is a solver for direct numerical time integration for 3DoF sys
 Note:   Mimics the structure of the code for analysis in KratosMultiphysics.
 
 Created on:  15.11.2015
-Last update: 13.11.2018
+Last update: 06.12.2019
 '''
 # ===============================================================================
 

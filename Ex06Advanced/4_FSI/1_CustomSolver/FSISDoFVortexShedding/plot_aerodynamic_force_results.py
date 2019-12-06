@@ -8,7 +8,7 @@ Author: philipp.bucher@tum.de, mate.pentek@tum.de
 Description: Script for plotting aerodynamic forces and moments
 
 Created on:  05.12.2015
-Last update: 13.11.2018
+Last update: 06.12.2018
 '''
 # ===============================================================================
 
@@ -64,9 +64,12 @@ if not moments_read:  # plot time label if second plot doesn't exist
 
 if moments_read:  # plot the moments if they have been read
     plt.subplot(number_of_subplots, 1, 2)
-    plt.plot(simul_time, moment_x, 'b-', linewidth=lw, label='Aerodyn. Moment X')
-    plt.plot(simul_time, moment_y, 'r-', linewidth=lw, label='Aerodyn. Moment Y')
-    plt.plot(simul_time, moment_z, 'k-', linewidth=lw, label='Aerodyn. Moment Z')
+    plt.plot(simul_time, moment_x, 'b-',
+             linewidth=lw, label='Aerodyn. Moment X')
+    plt.plot(simul_time, moment_y, 'r-',
+             linewidth=lw, label='Aerodyn. Moment Y')
+    plt.plot(simul_time, moment_z, 'k-',
+             linewidth=lw, label='Aerodyn. Moment Z')
     plt.title('Aerodynamic Moments')
     plt.xlabel('Time [s]')
     plt.ylabel('Moment [Nm]')

@@ -30,15 +30,13 @@ Last update: 13.11.2018
 
 # ----- Importing the modules -----
 import KratosMultiphysics
-# import KratosMultiphysics.MappingApplication as KratosMapping
-import KratosMultiphysics.FluidDynamicsApplication as KratosFluidDynamics
-#import KratosMultiphysics.StructuralMechanicsApplication as KratosStructuralMechanics
-import KratosMultiphysics.MeshMovingApplication as MeshMovingApplication
+from KratosMultiphysics.FluidDynamicsApplication.fluid_dynamics_analysis import FluidDynamicsAnalysis
+#from KratosMultiphysics.StructuralMechanicsApplication.structural_mechanics_analysis import StructuralMechanicsAnalysis
+
+import KratosMultiphysics.MeshMovingApplication.mesh_moving_analysis as MeshMovingAnalysis
 
 # Import the "BlackBox" Solvers
-#from structural_mechanics_analysis import StructuralMechanicsAnalysis
 import structure_sdof_solver as structure_solver
-from fluid_dynamics_analysis import FluidDynamicsAnalysis
 
 # here auxiliary functions e.g. for relaxation are declared
 import fsi_utilities
@@ -66,7 +64,7 @@ fluid_solver = FluidDynamicsAnalysis(fluid_model, parameters_fluid)
 
 fluid_solver.Initialize()
 
-fluid_model_part = fluid_model["MainModelPart"]
+fluid_model_part = fluid_model["FluidModelPart"]
 
 print("======================================================================")
 print("||||||||||||||||||||||| SETTING UP FLUID DONE ||||||||||||||||||||||||")

@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 '''
 Project:Lecture - Structural Wind Engineering WS18-19 
         Chair of Structural Analysis @ TUM - R. Wuchner, M. Pentek
@@ -26,20 +26,18 @@ Note:   This script is tuned to work with the precompiled Kratos 6.0.0, so only 
 Created on:  16.01.2018
 Last update: 13.11.2018
 '''
-#===============================================================================
+# ===============================================================================
 
 
 # ----- Importing the modules -----
 import KratosMultiphysics
-# import KratosMultiphysics.MappingApplication as KratosMapping
-import KratosMultiphysics.FluidDynamicsApplication as KratosFluidDynamics
-#import KratosMultiphysics.StructuralMechanicsApplication as KratosStructuralMechanics
-import KratosMultiphysics.MeshMovingApplication as MeshMovingApplication
+from KratosMultiphysics.FluidDynamicsApplication.fluid_dynamics_analysis import FluidDynamicsAnalysis
+#from KratosMultiphysics.StructuralMechanicsApplication.structural_mechanics_analysis import StructuralMechanicsAnalysis
+
+import KratosMultiphysics.MeshMovingApplication.mesh_moving_analysis as MeshMovingAnalysis
 
 # Import the "BlackBox" Solvers
-#from structural_mechanics_analysis import StructuralMechanicsAnalysis
 import structure_3dof_solver as structure_solver
-from fluid_dynamics_analysis import FluidDynamicsAnalysis
 
 # here auxiliary functions e.g. for relaxation are declared
 import fsi_utilities
@@ -52,10 +50,10 @@ fluid_model = KratosMultiphysics.Model()
 #structural_model = KratosMultiphysics.Model()
 
 fluid_project_params_file_name = "ProjectParametersCFD.json"
-with open(fluid_project_params_file_name,'r') as parameter_file:
+with open(fluid_project_params_file_name, 'r') as parameter_file:
     parameters_fluid = KratosMultiphysics.Parameters(parameter_file.read())
 structural_project_params_file_name = "ProjectParametersCSD.json"
-with open(structural_project_params_file_name,'r') as parameter_file:
+with open(structural_project_params_file_name, 'r') as parameter_file:
     parameters_structure = KratosMultiphysics.Parameters(parameter_file.read())
 
 '''
@@ -67,7 +65,7 @@ fluid_solver = FluidDynamicsAnalysis(fluid_model, parameters_fluid)
 
 fluid_solver.Initialize()
 
-fluid_model_part = fluid_model["MainModelPart"]
+fluid_model_part = fluid_model["FluidModelPart"]
 
 print("======================================================================")
 print("||||||||||||||||||||||| SETTING UP FLUID DONE ||||||||||||||||||||||||")
@@ -95,12 +93,12 @@ print("======================================================================")
 # '''
 
 fsi_project_params_file_name = "ProjectParametersFSI.json"
-with open(fsi_project_params_file_name,'r') as parameter_file:
+with open(fsi_project_params_file_name, 'r') as parameter_file:
     parameters_fsi = KratosMultiphysics.Parameters(parameter_file.read())
 
 # ----- Setting up the time parameters -----
 start_time = parameters_fsi["problem_data"]["start_time"].GetDouble()
-end_time   = parameters_fsi["problem_data"]["end_time"].GetDouble()
+end_time = parameters_fsi["problem_data"]["end_time"].GetDouble()
 delta_time = parameters_fsi["problem_data"]["time_step"].GetDouble()
 
 num_steps = int((end_time - start_time) / delta_time)
@@ -114,19 +112,22 @@ step = 0
 # ---------------
 # ----- ALE -----
 # ---------------
-fluid_solver._GetSolver().GetMeshMotionSolver().SetEchoLevel(0) # Fix until the source of the prints is found
+fluid_solver._GetSolver().GetMeshMotionSolver().SetEchoLevel(
+    0)  # Fix until the source of the prints is found
 
 # -------------------
 # ----- Mapping -----
 # -------------------
 # mapper = fsi_utilities.CreateMapper(fluid_model_part, structural_model_part, parameters_fsi["coupling_settings"]["mapper_settings"])
-mapper = fsi_utilities.CreateMapper(fluid_model_part, parameters_fsi["coupling_settings"]["mapper_settings"])
+mapper = fsi_utilities.CreateMapper(
+    fluid_model_part, parameters_fsi["coupling_settings"]["mapper_settings"])
 
 
 # -------------------
 # --- Convergence ---
 # -------------------
-convergence_accelerator = fsi_utilities.CreateConvergenceAccelerator(parameters_fsi["coupling_settings"]["convergence_accelerator_settings"])
+convergence_accelerator = fsi_utilities.CreateConvergenceAccelerator(
+    parameters_fsi["coupling_settings"]["convergence_accelerator_settings"])
 relaxation_coefficient = convergence_accelerator.rel_coef_initial
 
 
@@ -139,7 +140,7 @@ relaxation_coefficient = convergence_accelerator.rel_coef_initial
 
 # # Result output file names
 # iterationFileName = "Iterations_Aitken.dat"
-# cornerDispFileName = "cornerNode_XDisp_Aitken.dat"  
+# cornerDispFileName = "cornerNode_XDisp_Aitken.dat"
 
 # # clean up the Iterations.dat
 # open(iterationFileName, "w").close()
@@ -197,16 +198,17 @@ while(time <= end_time):
     old_displacements = fsi_utilities.GetDisplacements(structural_solver)
 
     num_inner_iter = 1
-    ### Inner FSI Loop (executed once in case of explicit coupling)
+    # Inner FSI Loop (executed once in case of explicit coupling)
     for k in range(convergence_accelerator.max_iter):
 
         # Apply Dirichlet B.C.'s from structural solver to mesh solver
         # map from the nodes in the structure (origin) on the interface
-        ## KratosStructuralMechanics.POINT_LOAD
+        # KratosStructuralMechanics.POINT_LOAD
         # to the interface nodes on the fluid (destination)
-        ## KratosMultiphysics.MESH_DISPLACEMENT
+        # KratosMultiphysics.MESH_DISPLACEMENT
         # fsi_utilities.DisplacementToMesh(mapper)
-        fsi_utilities.DisplacementToMesh(mapper, old_displacements, structural_solver)
+        fsi_utilities.DisplacementToMesh(
+            mapper, old_displacements, structural_solver)
 
         # Mesh and Fluid are currently solved independently, since the ALE solver does not copy the mesh velocity
         # Solve Mesh
@@ -222,13 +224,13 @@ while(time <= end_time):
 
         # Apply Neumann B.C.'s from fluid solver to structural solver
         # inverse map from the nodes in the fluid (destination) on the interface
-        ## KratosMultiphysics.REACTION
+        # KratosMultiphysics.REACTION
         # to the interface nodes on the structure (origin) with sign swap
-        ## KratosStructuralMechanics.POINT_LOAD
+        # KratosStructuralMechanics.POINT_LOAD
         fsi_utilities.NeumannToStructure(mapper, structural_solver, True)
 
         # # Solver Structure
-        #structural_solver._GetSolver().SolveSolutionStep()
+        # structural_solver._GetSolver().SolveSolutionStep()
         structural_solver.SolveSolutionStep()
 
         # Convergence Checking (only for implicit coupling)
@@ -239,23 +241,28 @@ while(time <= end_time):
             # Compute Residual
             old_residual = residual
             #residual = convergence_accelerator.CalculateResidual(displacements, old_displacements)
-            residual = convergence_accelerator.CalculateResidual(displacements, old_displacements)
+            residual = convergence_accelerator.CalculateResidual(
+                displacements, old_displacements)
 
             if (fsi_utilities.Norm(residual) <= convergence_accelerator.res_rel_tol):
                 #fsi_utilities.SetDisplacements(displacements, mapper.origin_interface.Nodes, DIMENSION)
-                fsi_utilities.SetDisplacements(displacements, structural_solver)
+                fsi_utilities.SetDisplacements(
+                    displacements, structural_solver)
 
                 print("******************************************************")
                 print("************ CONVERGENCE AT INTERFACE ACHIEVED *******")
                 print("******************************************************")
-                break # TODO check if this works bcs it is nested
+                break  # TODO check if this works bcs it is nested
             else:
-                relaxation_coefficient = convergence_accelerator.ComputeRelaxationCoefficient(relaxation_coefficient, residual, old_residual, k)
+                relaxation_coefficient = convergence_accelerator.ComputeRelaxationCoefficient(
+                    relaxation_coefficient, residual, old_residual, k)
                 #relaxed_displacements = convergence_accelerator.CalculateRelaxedSolution(relaxation_coefficient, old_displacements, residual)
-                relaxed_displacements = convergence_accelerator.CalculateRelaxedSolution(relaxation_coefficient, old_displacements, residual)
+                relaxed_displacements = convergence_accelerator.CalculateRelaxedSolution(
+                    relaxation_coefficient, old_displacements, residual)
                 old_displacements = relaxed_displacements
                 #fsi_utilities.SetDisplacements(relaxed_displacements,  mapper.origin_interface.Nodes, DIMENSION)
-                fsi_utilities.SetDisplacements(relaxed_displacements, structural_solver)
+                fsi_utilities.SetDisplacements(
+                    relaxed_displacements, structural_solver)
 
                 # iterations.append(round(relaxation_coefficient, 3))
                 num_inner_iter += 1
@@ -267,7 +274,8 @@ while(time <= end_time):
 
             print("==========================================================")
             print("COUPLING RESIDUAL = ", fsi_utilities.Norm(residual))
-            print("COUPLING ITERATION = ", k+1, "/", convergence_accelerator.max_iter)
+            print("COUPLING ITERATION = ", k+1, "/",
+                  convergence_accelerator.max_iter)
             print("RELAXATION COEFFICIENT = ", relaxation_coefficient)
             print("==========================================================")
 
@@ -296,4 +304,4 @@ while(time <= end_time):
 fluid_solver.Finalize()
 structural_solver.Finalize()
 
-#file_writer.CloseFile()
+# file_writer.CloseFile()
