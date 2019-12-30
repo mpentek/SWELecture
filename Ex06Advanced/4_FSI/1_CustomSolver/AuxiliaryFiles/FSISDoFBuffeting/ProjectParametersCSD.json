@@ -1,0 +1,21 @@
+{
+    "problem_data": {
+        "problem_name": "CSD",
+        "time_step": 0.05,
+        "start_time": 0.0,
+        "end_time": 50
+    },
+    "model_data": {
+        "absolute_position": 0.0,
+        "mass": 1e7,
+        "eigen_freq": 0.3,
+        "zeta": 0.05,
+        "rho_inf": 0.16,
+        "initial": {
+            "displacement": 0.0,
+            "velocity": 0.0,
+            "acceleration": 0.0
+        },
+        "dof_type": "DISPLACEMENT_X"
+    }
+}
