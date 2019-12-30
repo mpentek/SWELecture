@@ -127,5 +127,5 @@ def blue4pressure(cp, n, P1, P2, dur):
     u_min = u
     b_min = abs(b)
     
-    print(p1_max, p2_max, p1_rmax, p2_rmax, u_max, b_max, cp_max, p1_min, p2_min, p1_rmin, p2_rmin, u_min, b_min, cp_min)
+    #print(p1_max, p2_max, p1_rmax, p2_rmax, u_max, b_max, cp_max, p1_min, p2_min, p1_rmin, p2_rmin, u_min, b_min, cp_min)
     return(p1_max, p2_max, p1_rmax, p2_rmax, u_max, b_max, cp_max, p1_min, p2_min, p1_rmin, p2_rmin, u_min, b_min, cp_min)

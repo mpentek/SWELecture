@@ -126,8 +126,8 @@ def maxminest (record, dur_ratio = 1):
 
 
     n_cdf_pk =1000
-    cdf_pk_min = 0.0005
-    cdf_pk_max = 0.9995
+    cdf_pk_min = 0.025
+    cdf_pk_max = 0.975
 
     cdf_pk = np.linspace(cdf_pk_min,cdf_pk_max,n_cdf_pk)
 
