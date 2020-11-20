@@ -1,6 +1,6 @@
 #===============================================================================
 '''
-Project: Structural Wind Engineering WS19-20 
+Project: Structural Wind Engineering WS20-21 
         Chair of Structural Analysis @ TUM - R. Wuchner, M. Pentek
         
         SDoF system solver using direct time integration - Generalized-Alpha Scheme
@@ -21,7 +21,7 @@ Description: This is a solver for direct numerical time integration for SDoF sys
 Note:   ...
 
 Created on:  15.11.2015
-Last update: 27.09.2019
+Last update: 19.11.2020
 '''
 #===============================================================================
 

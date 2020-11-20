@@ -1,6 +1,6 @@
 #===============================================================================
 '''
-Project: Structural Wind Engineering WS19-20
+Project: Structural Wind Engineering WS20-21
         Chair of Structural Analysis @ TUM -R. Wuchner, M. Pentek
         
         MDoF system - structural parameters for a sample highrise
@@ -17,7 +17,7 @@ Description: This is a script containing a proposed build for the stiffness and
 Note:   ...
 
 Created on:  24.11.2016
-Last update: 27.09.2019
+Last update: 19.11.2020
 '''
 #===============================================================================
 import numpy as np
