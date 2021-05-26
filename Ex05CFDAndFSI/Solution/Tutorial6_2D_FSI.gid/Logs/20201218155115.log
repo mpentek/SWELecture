@@ -1,0 +1,31 @@
+Kratos Log Session
+*~* CET 2020-12-18 15:51:16  | {
+    "gid_version"          : "15.0.1",
+    "problemtype_git_hash" : 0,
+    "problemtype_version"  : "8.1.0",
+    "executable_version"   : "8.1.\"0\"-5db879349a-Release",
+    "current_platform"     : "windows"
+}
+*~* CET 2020-12-18 15:51:22  | apps::setActiveApp FSI
+*~* CET 2020-12-18 15:51:31  | apps::setActiveApp FSI
+*~* CET 2020-12-18 15:51:34  | Mesh BeforeMeshGeneration start
+*~* CET 2020-12-18 15:51:34  | Mesh BeforeMeshGeneration end in 0 sec
+*~* CET 2020-12-18 15:54:42  | Mesh BeforeMeshGeneration start
+*~* CET 2020-12-18 15:54:43  | Mesh BeforeMeshGeneration end in 1 sec
+*~* CET 2020-12-18 15:54:43  | Mesh end process in 1 sec
+*~* CET 2020-12-18 15:54:43  | Mesh data -> {
+    "Linear"        : 435,
+    "Triangle"      : 4299,
+    "Quadrilateral" : 228,
+    "nodes"         : 2597,
+    "is_quadratic"  : 0
+}
+*~* CET 2020-12-18 15:55:28  | Save model Tutorial6_2D_FSI.spd
+*~* CET 2020-12-18 15:55:31  | Write start C:/Users/pmt/LRZ Sync+Share/StructWindEngHiWi/ToUpdate_2021/Ex05FSI/Solution/Tutorial6_2D_FSI.gid/Tutorial6_2D_FSI.dat
+*~* CET 2020-12-18 15:55:31  | Write validation FSI
+*~* CET 2020-12-18 15:55:31  | Write MDPA FSI
+*~* CET 2020-12-18 15:55:32  | Write project parameters FSI
+*~* CET 2020-12-18 15:55:32  | Write custom event FSI
+*~* CET 2020-12-18 15:55:32  | Write end FSI in 1 sec
+*~* CET 2020-12-18 16:10:57  | Save model backup-19884.spd
+*~* CET 2020-12-18 16:35:40  | End session

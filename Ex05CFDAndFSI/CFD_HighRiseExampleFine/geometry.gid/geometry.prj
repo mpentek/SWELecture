@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gid version="13.5">
+  <pre>
+    <layer_to_use name="Layer0"/>
+    <groups>
+      <group id="1" name="structure" color="#ffaaaaff"/>
+      <group id="2" name="bottom" color="#0000ffff"/>
+      <group id="3" name="interim_surface_0" color="#ff00ffff"/>
+      <group id="4" name="fluid" color="#00ffffff"/>
+      <group id="5" name="interim_surface_1" color="#a60021ff"/>
+      <group id="6" name="inlet" color="#00ff00ff"/>
+      <group id="7" name="top" color="#996600ff"/>
+      <group id="8" name="wall" color="#b33366ff"/>
+      <group id="9" name="outlet" color="#804d4dff"/>
+    </groups>
+    <entities_groups>
+      <entities_group name="surfaces">
+        <vector name="entity_ids" length="23" type="integer">1:23</vector>
+        <vector name="entity_num_groups" length="23" type="ushort">1x23</vector>
+        <vector name="entity_groups" length="23" type="ushort">1x5 2 3x5 2 6 5x4 8 9 8 7 6 2</vector>
+      </entities_group>
+      <entities_group name="volumes">
+        <vector name="entity_ids" length="3" type="integer">1:3</vector>
+        <vector name="entity_num_groups" length="3" type="ushort">1x3</vector>
+        <vector name="entity_groups" length="3" type="ushort">4x3</vector>
+      </entities_group>
+    </entities_groups>
+  </pre>
+</gid>

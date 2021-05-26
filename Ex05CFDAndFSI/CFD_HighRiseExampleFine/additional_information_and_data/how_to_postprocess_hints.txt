@@ -1,0 +1,85 @@
+Cuts -> here defined with 3 points (which define a plane)
+
+GiD -> Posprocess -> Geometry -> Cut plane -> 3 points
+    Horizontal
+        1/3H
+            0,0,200
+            1,0,200
+            1,1,200
+        2/3H
+            0,0,400
+            1,0,400
+            1,1,400
+        H
+            0,0,600
+            1,0,600
+            1,1,600
+        4/3H
+            0,0,800
+            1,0,800
+            1,1,800
+            
+    Vertical
+        AlongX (in the middle)
+            0,0,0
+            1,0,0
+            1,0,1
+        AlongY1
+            -600,0,0
+            -600,1,0
+            -600,1,1
+        AlongY2
+            0,0,0
+            0,1,0
+            0,1,1
+        AlongY3
+            600,0,0
+            600,1,0
+            600,1,1
+
+Files -> Export -> Cut -> All cuts
+Re-use: Files -> Import -> Cut...
+
+View results -> Graphs -> Line graph -> VELOCITY -> X_VELOCITY (this is for a certain time step t=99.52s)
+    VelocityX along x-axis
+        at inlet: x = -1800
+        -1800,0,0
+        -1800,0,800
+
+        -1200,0,0
+        -1200,0,800
+
+        -600,0,0
+        -600,0,800
+
+        at the building: x = 0
+        0,0,0
+        0,0,800
+
+        600,0,0
+        600,0,800
+
+Files -> Export -> Graph -> VelocityX along x-axis -> All graphs of VelocityX along x-axis
+In the *.grf file you have all the numerical data to create plots in Excel, Python etc. for your project report and presentation
+Re-use: Files -> Import -> Graph...
+
+View results -> Streamlines -> Along line -> VELOCITY (this is for a certain time step t=82.5s)
+        -600,0,0
+        -600,0,800
+        30 points
+
+        -120,-120,10
+        -120,120,10
+        20 points
+
+        -120,-120,300
+        -120,120,300
+        20 points
+
+        -120,-120,590
+        -120,120,590
+        20 points
+
+Utilities -> Preferences -> Posprocess -> Stream lines -> Color mode -> Result contour filled
+Files -> Export -> Post information -> Stream lines
+Re-use: Files -> Import -> Stream lines...
