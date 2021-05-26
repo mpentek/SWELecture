@@ -1,0 +1,255 @@
+{
+    "problem_data"     : {
+        "problem_name"  : "Tutorial4_2D_CFD",
+        "parallel_type" : "OpenMP",
+        "echo_level"    : 0,
+        "start_time"    : 0.0,
+        "end_time"      : 25
+    },
+    "output_processes" : {
+        "gid_output" : [{
+            "python_module" : "gid_output_process",
+            "kratos_module" : "KratosMultiphysics",
+            "process_name"  : "GiDOutputProcess",
+            "help"          : "This process writes postprocessing files for GiD",
+            "Parameters"    : {
+                "model_part_name"        : "FluidModelPart.fluid_computational_model_part",
+                "output_name"            : "Tutorial4_2D_CFD",
+                "postprocess_parameters" : {
+                    "result_file_configuration" : {
+                        "gidpost_flags"               : {
+                            "GiDPostMode"           : "GiD_PostBinary",
+                            "WriteDeformedMeshFlag" : "WriteDeformed",
+                            "WriteConditionsFlag"   : "WriteConditions",
+                            "MultiFileFlag"         : "SingleFile"
+                        },
+                        "file_label"                  : "time",
+                        "output_control_type"         : "step",
+                        "output_interval"             : 10,
+                        "body_output"                 : true,
+                        "node_output"                 : false,
+                        "skin_output"                 : false,
+                        "plane_output"                : [],
+                        "nodal_results"               : ["VELOCITY","PRESSURE","MESH_DISPLACEMENT"],
+                        "gauss_point_results"         : [],
+                        "nodal_nonhistorical_results" : []
+                    },
+                    "point_data_configuration"  : []
+                }
+            }
+        }],
+        "vtk_output" : [{
+            "python_module" : "vtk_output_process",
+            "kratos_module" : "KratosMultiphysics",
+            "process_name"  : "VtkOutputProcess",
+            "help"          : "This process writes postprocessing files for Paraview",
+            "Parameters"    : {
+                "model_part_name"                             : "FluidModelPart.fluid_computational_model_part",
+                "output_control_type"                         : "step",
+                "output_interval"                             : 10,
+                "file_format"                                 : "binary",
+                "output_precision"                            : 7,
+                "output_sub_model_parts"                      : false,
+                "folder_name"                                 : "vtk_output_cfd",
+                "save_output_files_in_folder"                 : true,
+                "nodal_solution_step_data_variables"          : ["VELOCITY","PRESSURE","MESH_DISPLACEMENT"],
+                "nodal_data_value_variables"                  : [],
+                "element_data_value_variables"                : [],
+                "condition_data_value_variables"              : [],
+                "gauss_point_variables_extrapolated_to_nodes" : []
+            }
+        }]
+    },
+    "solver_settings"  : {
+        "solver_type": "ale_fluid",
+        "ale_boundary_parts": [
+            "NoSlip2D_InterfaceFluid"
+        ],
+        "mesh_motion_solver_settings": {
+            "solver_type": "structural_similarity",
+            "linear_solver_settings": {
+                "solver_type": "amgcl",
+                "smoother_type": "spai0",
+                "krylov_type": "gmres",
+                "coarsening_type": "aggregation",
+                "max_iteration": 200,
+                "provide_coordinates": false,
+                "gmres_krylov_space_dimension": 100,
+                "verbosity": 0,
+                "tolerance": 1e-7,
+                "scaling": false,
+                "block_size": 1,
+                "use_block_matrices_if_possible": true,
+                "coarse_enough": 5000
+            },
+            "reform_dofs_each_step": false,
+            "compute_reactions": false
+        },
+        "fluid_solver_settings": {
+            "model_part_name"                 : "FluidModelPart",
+            "domain_size"                     : 2,
+            "solver_type"                     : "FractionalStep",
+            "model_import_settings"           : {
+                "input_type"     : "mdpa",
+                "input_filename" : "Tutorial4_2D_CFD"
+            },
+            "material_import_settings"        : {
+                "materials_filename" : "FluidMaterials.json"
+            },
+            "echo_level"                      : 1,
+            "compute_reactions"               : true,
+            "dynamic_tau"                     : 0.1,
+            "predictor_corrector"             : false,
+            "pressure_tolerance"              : 1e-3,
+            "maximum_pressure_iterations"     : 4,
+            "velocity_tolerance"              : 1e-3,
+            "maximum_velocity_iterations"     : 15,
+            "velocity_linear_solver_settings" : {
+                "solver_type"                    : "amgcl",
+                "max_iteration"                  : 200,
+                "tolerance"                      : 1e-6,
+                "provide_coordinates"            : false,
+                "smoother_type"                  : "ilu0",
+                "krylov_type"                    : "lgmres",
+                "coarsening_type"                : "aggregation",
+                "gmres_krylov_space_dimension"   : 100,
+                "scaling"                        : false,
+                "use_block_matrices_if_possible" : false
+            },
+            "pressure_linear_solver_settings" : {
+                "solver_type"                    : "amgcl",
+                "max_iteration"                  : 200,
+                "tolerance"                      : 1e-6,
+                "provide_coordinates"            : false,
+                "smoother_type"                  : "ilu0",
+                "krylov_type"                    : "lgmres",
+                "coarsening_type"                : "aggregation",
+                "gmres_krylov_space_dimension"   : 100,
+                "scaling"                        : false,
+                "use_block_matrices_if_possible" : false
+            },
+            "volume_model_part_name"          : "Parts_Fluid",
+            "skin_parts"                      : ["AutomaticInlet2D_Inlet","Outlet2D_Outlet","Slip2D","NoSlip2D_InterfaceFluid"],
+            "no_skin_parts"                   : ["Drag_InterfaceFluid"],
+            "time_stepping"                   : {
+                "automatic_time_step" : false,
+                "time_step"           : 0.05
+            },
+            "reform_dofs_at_each_step"        : false}
+    },
+    "processes"        : {
+        "initial_conditions_process_list"  : [],
+        "boundary_conditions_process_list" : [{
+            "python_module" : "apply_inlet_process",
+            "kratos_module" : "KratosMultiphysics.FluidDynamicsApplication",
+            "Parameters"    : {
+                "model_part_name" : "FluidModelPart.AutomaticInlet2D_Inlet",
+                "variable_name"   : "VELOCITY",
+                "interval"        : [0,10.0],
+                "modulus"         : "25.0*t/10.0",
+                "direction"       : "automatic_inwards_normal"
+            }
+        },{
+            "python_module" : "apply_inlet_process",
+            "kratos_module" : "KratosMultiphysics.FluidDynamicsApplication",
+            "Parameters"    : {
+                "model_part_name" : "FluidModelPart.AutomaticInlet2D_Inlet",
+                "variable_name"   : "VELOCITY",
+                "interval"        : [10.0,"End"],
+                "modulus"         : 25.0,
+                "direction"       : "automatic_inwards_normal"
+            }
+        },{
+            "python_module": "assign_vector_variable_process",
+            "kratos_module": "KratosMultiphysics",
+            "process_name": "AssignVectorVariableProcess",
+            "Parameters": {
+                "model_part_name": "FluidModelPart.AutomaticInlet2D_Inlet",
+                "variable_name": "MESH_DISPLACEMENT",
+                "interval"        : [0.0,"End"],
+                "constrained"     : [true,true,true],
+                "value"           : [0.0,0.0,0.0]
+            }
+        },{
+            "python_module" : "apply_outlet_process",
+            "kratos_module" : "KratosMultiphysics.FluidDynamicsApplication",
+            "Parameters"    : {
+                "model_part_name"    : "FluidModelPart.Outlet2D_Outlet",
+                "variable_name"      : "PRESSURE",
+                "constrained"        : true,
+                "value"              : 0.0,
+                "hydrostatic_outlet" : false,
+                "h_top"              : 0.0
+            }
+        },{
+            "python_module": "assign_vector_variable_process",
+            "kratos_module": "KratosMultiphysics",
+            "process_name": "AssignVectorVariableProcess",
+            "Parameters": {
+                "model_part_name": "FluidModelPart.Outlet2D_Outlet",
+                "variable_name": "MESH_DISPLACEMENT",
+                "interval"        : [0.0,"End"],
+                "constrained"     : [true,true,true],
+                "value"           : [0.0,0.0,0.0]
+            }
+        },{
+            "python_module" : "apply_noslip_process",
+            "kratos_module" : "KratosMultiphysics.FluidDynamicsApplication",
+            "Parameters"    : {
+                "model_part_name" : "FluidModelPart.NoSlip2D_InterfaceFluid"
+            }
+        },{
+            "python_module": "assign_vector_variable_process",
+            "kratos_module": "KratosMultiphysics",
+            "process_name": "AssignVectorVariableProcess",
+            "Parameters": {
+                "model_part_name": "FluidModelPart.NoSlip2D_InterfaceFluid",
+                "variable_name": "MESH_DISPLACEMENT",
+                "interval"        : [0.0,"End"],
+                "constrained"     : [true,true,true],
+                "value"           : [0.0,0.0,0.0]
+            }
+        },{
+            "python_module" : "apply_slip_process",
+            "kratos_module" : "KratosMultiphysics.FluidDynamicsApplication",
+            "process_name"  : "ApplySlipProcess",
+            "Parameters"    : {
+                "model_part_name" : "FluidModelPart.Slip2D"
+            }
+        },{
+            "python_module": "assign_vector_variable_process",
+            "kratos_module": "KratosMultiphysics",
+            "process_name": "AssignVectorVariableProcess",
+            "Parameters": {
+                "model_part_name": "FluidModelPart.Slip2D",
+                "variable_name": "MESH_DISPLACEMENT",
+                "interval"        : [0.0,"End"],
+                "constrained"     : [true,true,true],
+                "value"           : [0.0,0.0,0.0]
+            }
+        }],
+        "gravity"                          : [{
+            "python_module" : "assign_vector_by_direction_process",
+            "kratos_module" : "KratosMultiphysics",
+            "process_name"  : "AssignVectorByDirectionProcess",
+            "Parameters"    : {
+                "model_part_name" : "FluidModelPart.Parts_Fluid",
+                "variable_name"   : "BODY_FORCE",
+                "modulus"         : 0.0,
+                "constrained"     : false,
+                "direction"       : [0.0,-1.0,0.0]
+            }
+        }],
+        "auxiliar_process_list"            : [{
+            "python_module" : "compute_body_fitted_drag_process",
+            "kratos_module" : "KratosMultiphysics.FluidDynamicsApplication",
+            "process_name"  : "ComputeBodyFittedDragProcess",
+            "Parameters"    : {
+                "model_part_name"        : "FluidModelPart.Drag_InterfaceFluid",
+                "write_drag_output_file" : true,
+                "print_drag_to_screen"   : false,
+                "interval"               : [0.0,"End"]
+            }
+        }]
+    }
+}
