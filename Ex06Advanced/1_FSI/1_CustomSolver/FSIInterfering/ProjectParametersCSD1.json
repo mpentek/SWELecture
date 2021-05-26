@@ -1,0 +1,57 @@
+{
+    "problem_data": {
+        "problem_name": "CSD1",
+        "time_step": 0.05,
+        "start_time": 0.0,
+        "end_time": 50
+    },
+    "model_data": {
+        "absolute_position": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "mass": [
+            4.5e7,
+            3.5e7,
+            5.5e9
+        ],
+        "eigen_freq": [
+            0.55,
+            0.35,
+            0.45
+        ],
+        "zeta": [
+            0.075,
+            0.075,
+            0.075
+        ],
+        "rho_inf": [
+            0.16,
+            0.16,
+            0.16
+        ],
+        "initial": {
+            "displacement": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "velocity": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "acceleration": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "dof_type": [
+            "DISPLACEMENT_X",
+            "DISPLACEMENT_Y",
+            "ROTATION_Z"
+        ]
+    }
+}

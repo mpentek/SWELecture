@@ -1,0 +1,33 @@
+{
+	"problem_data": {
+		"problem_name": "FSI",
+		"time_step": 0.05,
+		"start_time": 0.0,
+		"end_time": 25,
+		"echo_level": 1
+	},
+	"coupling_settings": {
+		"mapper_settings": {
+			"mapper_type": "nearest_neighbor",
+			"interface_submodel_part_destination": "NoSlip2D_InterfaceFluid",
+			"interface_submodel_part_origin": "PointLoad2D_InterfaceStructure",
+			"map": {
+				"type": "consistent",
+				"origin_variable": "DISPLACEMENT",
+				"destination_variable": "MESH_DISPLACEMENT"
+			},
+			"inverse_map": {
+				"type": "conservative",
+				"origin_variable": "POINT_LOAD",
+				"destination_variable": "REACTION"
+			}
+		},
+		"convergence_accelerator_settings": {
+			"type": "aitken",
+			"max_iterations": 10,
+			"residual_relative_tolerance": 1e-6,
+			"residual_absolute_tolerance": 1e-8,
+			"relaxation_coefficient_initial_value": 0.25
+		}
+	}
+}
