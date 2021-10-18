@@ -1,6 +1,6 @@
 #===============================================================================
 '''
-Project: Lecture - Structural Wind Engineering WS20-21 
+Project: Lecture - Structural Wind Engineering WS21-22 
 Chair of Structural Analysis @ TUM - R. Wüchner, M. Péntek, A. Kodakkal        
         Various custom utilities for statistical evaluations
 
@@ -12,7 +12,7 @@ Description: This is a script containing necessary function definitions for exam
 Note: ...
 
 Created on:  30.11.2015
-Last update: 28.10.2020
+Last update: 18.10.2021
 '''
 #===============================================================================
 import matplotlib.mlab as mlab
