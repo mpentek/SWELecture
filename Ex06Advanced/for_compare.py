@@ -117,30 +117,29 @@ def stdnormcdf(x):
     return p
 
 
-def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cfd_qnt = 0.975, dur_ratio = 1):
+def maxmin_qnt_est (record, cdf_p_max = 0.975, cdf_p_min = 0.025, cdf_qnt = 0.995, dur_ratio = 1):
     '''
-    The function computes estimated AND quantile extreme values of a given time series.
+    The function computes estimated quantile values of a given time series.
+    And gives a quantile value for probability of exceedance: cdf_qnt
+    The function computes expected maximum and minimum values of time series by estimating probability distributions for the peaks.
     INPUT.
         record: is a time series for which the peaks should be estimated
 
-        dur_ratio(optional) = allows peaks to be estimated for a duration that differs from the duration of the record itself:
+        dur_ratio(optional) = allows peaks to be estimated for a duration that differs from the duration of the record itself (y_pk calculation):
                               dur_ratio = [duration for peak estimation]/[duration of record]
-        cdf_p_max, cdf_p_min -> integration limits for the determination of the 'estimated' value
-        cdf_qnt quantile value (probability of non-exceedance) for which an extreme should be calculated single value between 0 and 1
-    RETURN: the estimated vlaues
-
-    NOTE: https://www.itl.nist.gov/div898/winds/peakest_files/peakest.htm 
-    This is based on the matlab scripts from NIST. 
-    JZ: included the maxminqnt.m into this function. The whole computation process is the same for both values (est & qnt).
-    Except at the end an integration is done to get the estimated value. (illustrated in Thesis JZ)
-    Hint: Usually other extreme value methods compute a quantile value. The authors claim that the estimated value however is more efficient in the context of wind loads.  
-    (see: https://www.itl.nist.gov/div898/winds/pdf_files/b02030.pdf) 
+                              (If unspecified, a value of 1 is used.)
+        cdf_p_max, cdf_p_min -> integration limits?!
+        cdf_qnt quantile value (probability of non-exceedance) for which an extreme should be returned single value between 0 and 1 !
     '''
     import numpy as np
     import scipy.interpolate as interpolate
     import math
+    #    if not record:
 
-    n_cdf_pk =1000
+
+    n_cdf_pk = 1000
+    cdf_pk_min = cdf_p_min
+    cdf_pk_max = cdf_p_max
 
     cdf_pk = np.linspace(cdf_pk_min,cdf_pk_max,n_cdf_pk)
 
@@ -167,6 +166,7 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cfd_qnt = 0.975, 
     max_qnt = np.zeros(rec_size)
     min_qnt = np.zeros(rec_size)
 
+    # NOTE rec_size is the number of time hisories given to the funciton! not the sample size of each record
     for i in np.arange(rec_size):
         if rec_size == 1:
             x = record
@@ -182,6 +182,7 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cfd_qnt = 0.975, 
 
         skew_x = np.sum(np.power(x-mean_x,3))/(n*std_x**3)
 
+        # sign conversion if negative skewes record
         X = x*np.sign(skew_x)
         
         sort_X = np.sort(X)
@@ -208,7 +209,7 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cfd_qnt = 0.975, 
         n_start = 7
 
         gamma_list = np.logspace(math.log10(gamma_min),math.log10(gamma_max),n_gamma)
-        
+
         gam_PPCC_list = np.zeros(gamma_list.shape)
         count = 0
         beta_coarse_list = np.zeros((125,1))
@@ -331,16 +332,17 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cfd_qnt = 0.975, 
         if Nupcross<100:
             print('The number of median upcrossings is low {}'.format(Nupcross))
             print('The record may be too short for accurate peak estimation.')
+        
         # everything performed on the Gaussian process y(t)
         y_pk = np.sqrt(2.0*np.log(np.divide(-dur_ratio*Nupcross,np.log(cdf_pk))))
-        
+
         CDF_y = stdnormcdf(y_pk)
         
         # Perform the mapping procedure to compute the CDF of largest peak for X(t) from y(t)
-
+        # theoretical extremes in non - Gaussian space?
         X_max = stdgaminv(CDF_y,gam) * beta 
         X_max+= + mu
-        
+
         X_min = np.multiply(stdnorminv(1-CDF_y),sigma_low)
         
         X_min+=mu_low
@@ -357,6 +359,7 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cfd_qnt = 0.975, 
 
             max_qnt[i] = X_max[id_qnt] # fill the ith row x_max contains the 
             min_qnt[i] = X_min[id_qnt]
+            
         else:
             ##
             # ORIGINAL
@@ -364,16 +367,12 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cfd_qnt = 0.975, 
             # max_est[i] = np.trapz((np.multiply(pdf_pk,X_max)),y_pk)
             # min_est[i] = np.trapz((np.multiply(pdf_pk,X_min)),y_pk)
             ##
-           
+
             # UPDATE according to initial MATLAB -> seems to be able to robustly handle
             # normal random as well
             ##
             max_est[i] = -np.trapz((np.multiply(pdf_pk,X_min)),y_pk)
             min_est[i] = -np.trapz((np.multiply(pdf_pk,X_max)),y_pk)
-            ##
-            # UPDATE according to initial MATLAB -> seems to be able to robustly handle
-            # normal random as well
-            ##
 
             max_std[i] = np.trapz((np.multiply(np.power((-X_min-max_est[i]),2),pdf_pk)),y_pk)
             min_std[i] = np.trapz((np.multiply(np.power((-X_max-min_est[i]),2),pdf_pk)),y_pk)
@@ -381,4 +380,4 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cfd_qnt = 0.975, 
             max_qnt[i] = -X_min[id_qnt]
             min_qnt[i] = -X_max[id_qnt]
 
-    return max_est, min_est, max_std, min_std
+    return max_qnt, min_qnt, max_est, min_est, max_std, min_std, Nupcross
