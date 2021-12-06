@@ -117,7 +117,23 @@ def stdnormcdf(x):
     return p
 
 
-def maxminest (record, dur_ratio = 1):
+def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cdf_qnt = 0.975, dur_ratio = 1):
+    '''
+    The function computes estimated AND quantile extreme values of a given time series.
+    INPUT.
+        record: is a time series for which the peaks should be estimated
+        dur_ratio(optional) = allows peaks to be estimated for a duration that differs from the duration of the record itself:
+                              dur_ratio = [duration for peak estimation]/[duration of record]
+        cdf_p_max, cdf_p_min -> integration limits for the determination of the 'estimated' value
+        cdf_qnt quantile value (probability of non-exceedance) for which an extreme should be calculated single value between 0 and 1
+    RETURN: the estimated vlaues
+    NOTE: https://www.itl.nist.gov/div898/winds/peakest_files/peakest.htm 
+    This is based on the matlab scripts from NIST. 
+    JZ: included the maxminqnt.m into this function. The whole computation process is the same for both values (est & qnt).
+    Except at the end an integration is done to get the estimated value. (illustrated in Thesis JZ)
+    Hint: Usually other extreme value methods compute a quantile value. The authors claim that the estimated value however is more efficient in the context of wind loads.  
+    (see: https://www.itl.nist.gov/div898/winds/pdf_files/b02030.pdf) 
+    '''
 
     import numpy as np
     import scipy.interpolate as interpolate
@@ -126,10 +142,17 @@ def maxminest (record, dur_ratio = 1):
 
 
     n_cdf_pk =1000
-    cdf_pk_min = 0.025
-    cdf_pk_max = 0.975
 
     cdf_pk = np.linspace(cdf_pk_min,cdf_pk_max,n_cdf_pk)
+
+    if cdf_qnt not in cdf_pk:
+        c = list(cdf_pk)
+        bisect.insort(c, cdf_qnt)
+        cdf_pk = np.asarray(c)
+        id_qnt = c.index(cdf_qnt)
+    else:
+        id_qnt = int(np.where(cdf_pk == cdf_qnt)[0])
+
 
     rsize = np.array(record).shape
     
@@ -138,11 +161,13 @@ def maxminest (record, dur_ratio = 1):
     else:
         rec_size = rsize[0]
     
-
     max_est = np.zeros((rec_size,1))
     min_est = np.zeros((rec_size,1))
     max_std = np.zeros((rec_size,1))
     min_std = np.zeros((rec_size,1))
+
+    max_qnt = np.zeros(rec_size)
+    min_qnt = np.zeros(rec_size)
 
     for i in np.arange(rec_size):
         if rec_size == 1:
@@ -316,6 +341,7 @@ def maxminest (record, dur_ratio = 1):
             print('The number of median upcrossings is low {}'.format(Nupcross))
             print('The record may be too short for accurate peak estimation.')
         
+        # everything performed on the Gaussian process y(t)
         y_pk = np.sqrt(2.0*np.log(np.divide(-dur_ratio*Nupcross,np.log(cdf_pk))))
         
         CDF_y = stdnormcdf(y_pk)
@@ -331,9 +357,8 @@ def maxminest (record, dur_ratio = 1):
         X_min = np.multiply(stdnorminv(1-CDF_y),sigma_low)
         
         X_min+=mu_low
+        # probability distribution function of the extreme values in non-Gaussian space
         pdf_pk = np.multiply(np.multiply(-y_pk,cdf_pk),np.log(cdf_pk))
-        
-        
         
         # Compute the Mean of the Peaks for process X(t)
 
@@ -342,17 +367,16 @@ def maxminest (record, dur_ratio = 1):
             min_est[i] = np.trapz((np.multiply(pdf_pk,X_min)),y_pk)
             max_std[i] = np.trapz((np.multiply(np.power((X_max-max_est[i]),2),pdf_pk)),y_pk)
             min_std[i] = np.trapz((np.multiply(np.power((X_min-min_est[i]),2),pdf_pk)),y_pk)
+
+            max_qnt[i] = X_max[id_qnt] # fill the ith row x_max contains the 
+            min_qnt[i] = X_min[id_qnt]
         else:
             ##
             # ORIGINAL
             ##
             # max_est[i] = np.trapz((np.multiply(pdf_pk,X_max)),y_pk)
             # min_est[i] = np.trapz((np.multiply(pdf_pk,X_min)),y_pk)
-            ##
-            # ORIGINAL
-            ##
-
-            ##
+           
             # UPDATE according to initial MATLAB -> seems to be able to robustly handle
             # normal random as well
             ##
@@ -365,6 +389,9 @@ def maxminest (record, dur_ratio = 1):
 
             max_std[i] = np.trapz((np.multiply(np.power((-X_min-max_est[i]),2),pdf_pk)),y_pk)
             min_std[i] = np.trapz((np.multiply(np.power((-X_max-min_est[i]),2),pdf_pk)),y_pk)
+
+            max_qnt[i] = -X_min[id_qnt]
+            min_qnt[i] = -X_max[id_qnt]
 
     return max_est, min_est, max_std, min_std
 
