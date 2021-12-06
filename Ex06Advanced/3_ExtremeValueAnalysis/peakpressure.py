@@ -117,7 +117,7 @@ def stdnormcdf(x):
     return p
 
 
-def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cfd_qnt = 0.975, dur_ratio = 1):
+def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cdf_qnt = 0.975, dur_ratio = 1):
     '''
     The function computes estimated AND quantile extreme values of a given time series.
     INPUT.
