@@ -10,6 +10,7 @@ def blue4pressure(series, n_blocks, P1 = 0.8, P2 = 0.5704, dur_ratio=1):
     P1 and P2 of the Gumbel distribution fitted to the epochal peaks.
     n = integer, dur need NOT be an integer.
     Written by Dat Duthinh 8_25_2015, 2_2_2016, 2_6_2017
+
     Reference: 
     Matlab source from NIST: https://www.itl.nist.gov/div898/winds/gumbel_blue/gumbblue.htm 
     1) Julius Lieblein "Efficient Methods of Extreme-Value
@@ -27,24 +28,27 @@ def blue4pressure(series, n_blocks, P1 = 0.8, P2 = 0.5704, dur_ratio=1):
     dur_ratio = duration ratio of length of initial series to time for which the extremes should be computed
     P1, P2 = probabilities of non-exceedance of extremes in EV1 (Gumbel).  
     P1 defaults to 0.80 (ISO) and P2 to 0.5704 (mean).  
+
     NOTE JZ:
     replaced input 'dur' by 'dur_ratio' -> like this it is the same input vlaue as the dur_ratio from the maxminest function.
+
     Return:
+
     p1_rmax (p1_rmin)= extreme value of positive (negative) peaks with probability of non-exceedance P1 for duration of series
     p2_rmax (p2_rmin)= extreme value of positive (negative) peaks with probability of non-exceedance P2 for for dur duration of series
         
     Computed but not returned are:
+
     p1_max (p1_min)= extreme value of positive (negative) peaks with probability of non-exceedance P1 for duration of 1 epoch
     p2_max (p2_min)= extreme value of positive (negative) peaks withprobability of exceedance P2 for duration of 1 epoch
+
     series_max (series_min)= vector of n positive (negative) epochal peaks
     u_max, b_max (u_min, b_min) = location and scale parameters of EV1
     (Gumbel) for positive (negative) peaks
     '''
-
-
+    
     import numpy as np
     import math
-
     # Size of series array
     t = len(series)
 
@@ -62,26 +66,20 @@ def blue4pressure(series, n_blocks, P1 = 0.8, P2 = 0.5704, dur_ratio=1):
             a = series[int(i*t/n_blocks):int((i+1)*t/n_blocks)]
             series_max[i] = a.max()
             series_min[i] = a.min()
-    elif r > n/2:
+
+    elif r > n_blocks/2:
         q = int(np.fix(t/n_blocks)+1)
         for i in np.arange(0,n_blocks-1):
             a = series[i*q:(i+1)*q]
             series_max[i] = a.max()
             series_min[i] = a.min()
-
-        a = series[n*q:t]
-        series_max[n_blocks] = max[a]
-        series_min[n_blocks] = min[a]
+        
     else:
         q = int(np.fix(t/n_blocks))
         for i in np.arange(0,n_blocks-1):
             a = series[i*q:(i+1)*q]
-            series_max[i] = max[a]
-            series_min[i] = min[a]
-        
-        # a = series(1+(n-1)*q:t)
-        series_max[n] = max[a]
-        series_min[n] = min[a]
+            series_max[i] = a.max()
+            series_min[i] = a.min()
 
     # Coefficients for all n
     [ai,bi]= bluecoeff(n_blocks)
@@ -96,12 +94,14 @@ def blue4pressure(series, n_blocks, P1 = 0.8, P2 = 0.5704, dur_ratio=1):
         dur = n_blocks
     else:
         dur = dur_ratio * n_blocks
+
     
     # ************************** MAX CASE PEAK ***************************
-    u = 0; # location parameter
-    b = 0; # scale parameter
+    u = 0 # location parameter
+    b = 0 # scale parameter
 
     # Calculate parameters of location and scale
+    # Lieblein eq. 4
     for j in np.arange(0,n_blocks):
         u = u + ai[j]*x_max[j]
         b = b + bi[j]*x_max[j]
@@ -121,10 +121,10 @@ def blue4pressure(series, n_blocks, P1 = 0.8, P2 = 0.5704, dur_ratio=1):
         u = u + ai[j]*x_min[j]
         b = b + bi[j]*x_min[j]
 
-    p1_min = u - b*math.log(-math.log(P1)) # for 1 epoch
-    p1_rmin = p1_min + b*math.log(dur) # for longer duration
-    p2_min = u - b*math.log(-math.log(P2)) # for 1 epoch
-    p2_rmin = p2_min + b*math.log(dur) # for longer duration
+    p1_min = u - b*math.log(-math.log(P1))  # for 1 epoch
+    p1_rmin = p1_min + b*math.log(dur)  # for longer duration
+    p2_min = u - b*math.log(-math.log(P2))  # for 1 epoch
+    p2_rmin = p2_min + b*math.log(dur)  # for longer duration
     u_min = u
     b_min = abs(b)
     

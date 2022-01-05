@@ -122,11 +122,13 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cdf_qnt = 0.975, 
     The function computes estimated AND quantile extreme values of a given time series.
     INPUT.
         record: is a time series for which the peaks should be estimated
+
         dur_ratio(optional) = allows peaks to be estimated for a duration that differs from the duration of the record itself:
                               dur_ratio = [duration for peak estimation]/[duration of record]
         cdf_p_max, cdf_p_min -> integration limits for the determination of the 'estimated' value
         cdf_qnt quantile value (probability of non-exceedance) for which an extreme should be calculated single value between 0 and 1
     RETURN: the estimated vlaues
+
     NOTE: https://www.itl.nist.gov/div898/winds/peakest_files/peakest.htm 
     This is based on the matlab scripts from NIST. 
     JZ: included the maxminqnt.m into this function. The whole computation process is the same for both values (est & qnt).
@@ -134,12 +136,9 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cdf_qnt = 0.975, 
     Hint: Usually other extreme value methods compute a quantile value. The authors claim that the estimated value however is more efficient in the context of wind loads.  
     (see: https://www.itl.nist.gov/div898/winds/pdf_files/b02030.pdf) 
     '''
-
     import numpy as np
     import scipy.interpolate as interpolate
     import math
-    #    if not record:
-
 
     n_cdf_pk =1000
 
@@ -152,7 +151,6 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cdf_qnt = 0.975, 
         id_qnt = c.index(cdf_qnt)
     else:
         id_qnt = int(np.where(cdf_pk == cdf_qnt)[0])
-
 
     rsize = np.array(record).shape
     
@@ -199,9 +197,6 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cdf_qnt = 0.975, 
         f = interpolate.interp1d(CDF_X,sort_X)
         X_coarse = f(CDF_coarse)
         
-        
-        
-        
         mean_X_coarse = np.mean(X_coarse)
 
         # std_X_coarse = np.std(X_coarse) # Original
@@ -214,7 +209,6 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cdf_qnt = 0.975, 
 
         gamma_list = np.logspace(math.log10(gamma_min),math.log10(gamma_max),n_gamma)
         
-
         gam_PPCC_list = np.zeros(gamma_list.shape)
         count = 0
         beta_coarse_list = np.zeros((125,1))
@@ -317,8 +311,6 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cdf_qnt = 0.975, 
 
         # linear regression:
         
-
-                
         sigma_low = (np.sum(np.multiply(s_norm_low,X_low))-n_low*mean_s_norm_low*mean_X_low)/(np.sum(np.power(s_norm_low,2))-n_low*mean_s_norm_low**2)
         
         mu_low=mean_X_low - sigma_low*mean_s_norm_low
@@ -336,23 +328,18 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cdf_qnt = 0.975, 
         
         Nupcross = len(set(front[0]) & set(back[0]))
         
-
         if Nupcross<100:
             print('The number of median upcrossings is low {}'.format(Nupcross))
             print('The record may be too short for accurate peak estimation.')
-        
         # everything performed on the Gaussian process y(t)
         y_pk = np.sqrt(2.0*np.log(np.divide(-dur_ratio*Nupcross,np.log(cdf_pk))))
         
         CDF_y = stdnormcdf(y_pk)
         
-        
         # Perform the mapping procedure to compute the CDF of largest peak for X(t) from y(t)
 
         X_max = stdgaminv(CDF_y,gam) * beta 
         X_max+= + mu
-        
-
         
         X_min = np.multiply(stdnorminv(1-CDF_y),sigma_low)
         
@@ -376,6 +363,7 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cdf_qnt = 0.975, 
             ##
             # max_est[i] = np.trapz((np.multiply(pdf_pk,X_max)),y_pk)
             # min_est[i] = np.trapz((np.multiply(pdf_pk,X_min)),y_pk)
+            ##
            
             # UPDATE according to initial MATLAB -> seems to be able to robustly handle
             # normal random as well
@@ -394,5 +382,3 @@ def maxminest (record, cdf_pk_min = 0.025, cdf_pk_max = 0.975, cdf_qnt = 0.975, 
             min_qnt[i] = -X_max[id_qnt]
 
     return max_est, min_est, max_std, min_std
-
-        
